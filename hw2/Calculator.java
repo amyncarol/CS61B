@@ -2,6 +2,7 @@ import list.EquationList;
 
 public class Calculator {
     // YOU MAY WISH TO ADD SOME FIELDS
+    public EquationList eqList;
 
     /**
      * TASK 2: ADDING WITH BIT OPERATIONS
@@ -12,8 +13,32 @@ public class Calculator {
      * @return the sum of x and y
      **/
     public int add(int x, int y) {
-        // YOUR CODE HERE
-        return -1;
+        int carryDigit = 0; //updated every loop
+        int sum = 0; //calculated from the left side, updated every loop
+        for (int i=0; i<32; i=i+1){
+            int xDigit = x & (1<<i); //mask all the other digits
+            int yDigit = y & (1<<i);
+            int sumDigit = xDigit ^ yDigit ^ carryDigit; 
+            sum = sum ^ sumDigit; //update sum
+            //calculate the carryDigit for next loop
+            if ((xDigit==(1<<i)) && (yDigit==(1<<i)) 
+                || (xDigit==(1<<i)) && (carryDigit==(1<<i))
+                || (carryDigit==(1<<i)) && (yDigit==(1<<i))){
+                    carryDigit=(1<<(i+1));
+            } else{
+                    carryDigit = 0;
+            } 
+        }
+        //try to test if result overflow
+        /* 
+         *if ((x>>>31)==1 && (y>>>31)==1 && (sum>>>31)==0 ||
+         *   (x>>>31)==0 && (y>>>31)==0 && (sum>>>31)==1){
+         *  System.out.println("sum overflow!");
+         * return -1;
+         *} else {
+         */
+        return sum;
+        //}
     }
 
     /**
@@ -25,8 +50,13 @@ public class Calculator {
      * @return the product of x and y
      **/
     public int multiply(int x, int y) {
-        // YOUR CODE HERE
-        return -1;
+        int product=0;
+        for (int i=0; i<32; i=i+1){
+            if ((y & (1<<i)) == (1<<i)){
+                product=add(product,(x<<i));
+            }
+        }
+        return product;
     }
 
     /**
@@ -38,8 +68,10 @@ public class Calculator {
      * @param equation is a String representation of the equation, ex. "1 + 2"
      * @param result is an integer corresponding to the result of the equation
      **/
+
     public void saveEquation(String equation, int result) {
-        // YOUR CODE HERE
+        EquationList temp = eqList;
+        eqList = new EquationList(equation, result, temp);
     }
 
     /**
@@ -50,7 +82,13 @@ public class Calculator {
      * Ex   "1 + 2 = 3"
      **/
     public void printAllHistory() {
-        // YOUR CODE HERE
+        EquationList temp = eqList;
+        int n=0;
+        while (temp!=null){
+            n=n+1;
+            temp=temp.next;
+        }
+        printHistory(n);
     }
 
     /**
@@ -61,7 +99,14 @@ public class Calculator {
      * Ex   "1 + 2 = 3"
      **/
     public void printHistory(int n) {
-        // YOUR CODE HERE
+        EquationList temp = eqList;
+        for (int i=0; i<n; i=i+1){
+            if (temp==null){
+                break;
+            }
+            System.out.println(temp.equation + " = " + temp.result);
+            temp=temp.next;
+        }
     }    
 
     /**
@@ -69,7 +114,7 @@ public class Calculator {
      * undoEquation() removes the most recent equation we saved to our history.
     **/
     public void undoEquation() {
-        // YOUR CODE HERE
+        eqList=eqList.next;
     }
 
     /**
@@ -77,7 +122,7 @@ public class Calculator {
      * clearHistory() removes all entries in our history.
      **/
     public void clearHistory() {
-        // YOUR CODE HERE
+        eqList=null;
     }
 
     /**
@@ -87,8 +132,13 @@ public class Calculator {
      * @return the sum of all of the results in history
      **/
     public int cumulativeSum() {
-        // YOUR CODE HERE
-        return -1;
+        int sum = 0;
+        EquationList temp = eqList;
+        while (temp != null){
+            sum = add(sum,temp.result);
+            temp = temp.next;
+        }
+        return sum;
     }
 
     /**
@@ -98,7 +148,12 @@ public class Calculator {
      * @return the product of all of the results in history
      **/
     public int cumulativeProduct() {
-        // YOUR CODE HERE
-        return -1;
+        int product = 1;
+        EquationList temp = eqList;
+        while (temp != null){
+            product = multiply(product,temp.result);
+            temp = temp.next;
+        }
+        return product;
     }
 }
