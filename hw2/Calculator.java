@@ -7,7 +7,7 @@ public class Calculator {
     /**
      * TASK 2: ADDING WITH BIT OPERATIONS
      * add() is a method which computes the sum of two integers x and y using 
-     * only bitwise operators.
+     * only bitwise operators
      * @param x is an integer which is one of two addends
      * @param y is an integer which is the other of the two addends
      * @return the sum of x and y
