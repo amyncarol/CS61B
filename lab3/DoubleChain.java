@@ -2,6 +2,7 @@
 public class DoubleChain {
 	
 	private DNode head;
+	private DNode tail;
 	private int size;
 
 	public int getSize(){
@@ -11,41 +12,38 @@ public class DoubleChain {
 	
 	public DoubleChain(){
 		size = 0;
-		head = new DNode(null,-1,null);
+		head = null;
+		tail = null;
 	}
 
 	public DoubleChain(double val) {
-		size = 1;
-		head = new DNode(null,-1,null);  
-		head.next = new DNode(null,val,null);
+		size = 1; 
+		head = new DNode(null,val,null);
+		tail = head;
 	}
 
 	public DNode getFront() {
-		return head.next;
+		return head;
 	}
 
 	/** Returns the last item in the DoubleChain. */		
 	public DNode getBack() {
-		DNode p = head;
-		while (p.next!=null){
-			p=p.next;
-		}
-		return p;
+		return tail;
 	}
 	
 	/** Adds D to the front of the DoubleChain. */	
 	public void insertFront(double d) {
-		head.next = new DNode(null,d,head.next);
+		DNode temp = head;
+		head = new DNode(null,d,temp);
+		temp.prev = head;
 		size = size + 1; 
 	}
 	
 	/** Adds D to the back of the DoubleChain. */	
 	public void insertBack(double d) {
-		DNode p = head;
-		while (p.next!=null){
-			p=p.next;
-		}
-		p.next=new DNode(p,d,null);
+		DNode temp = tail;
+		tail = new DNode(temp,d,null);
+		temp.next = tail;
 		size = size + 1;
 
 	}
@@ -55,35 +53,35 @@ public class DoubleChain {
 	public DNode deleteBack() {
 		if (size==0){
 			return null;
-		}
-		if (size==1){
-			size = size-1;
-			return head.next;
-
-		}
-		DNode p = head;
-		while (p.next!=null){
-			p=p.next;
-		}
-		p.prev.next=null;
+		} else if (size==1){
+			DNode temp = tail;
+			size = 0;
+			tail = null;
+			head = null;
+			return temp;
+		} else{
+		DNode temp = tail;
+		tail = temp.prev;
+		tail.next = null;
 		size = size - 1;
-		return p;
+		return temp;
+		}
 	}
 	
-	/** Returns a string representation of the DoubleChain. 
+	/* Returns a string representation of the DoubleChain. 
 	  * This is an extra challenge problem. */
-	// public String toString() {
-	// 	String s = "<[";
-	// 	DNode p = head;
-	// 	while (p.next.next!=null){
-	// 		s = s + Double.toString(p.next.val);
-	// 		s = s + ", ";
-	// 		p=p.next;
-	// 	}
-	// 	s = s+ Double.toString(p.next.val);
-	// 	s = s + "]>";
-	// 	return s;
-	// }
+	public String toString() {
+		String s = "<[";
+		DNode p = head;
+		while (p.next!=null){
+			s = s + Double.toString(p.val);
+			s = s + ", ";
+			p=p.next;
+		}
+		s = s+ Double.toString(p.val);
+		s = s + "]>";
+		return s;
+	}
 
 	public static class DNode {
 		public DNode prev;

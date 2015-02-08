@@ -48,19 +48,23 @@ public class TestDoubleChain {
     	assertEquals(5,d.getBack().val,1e-11);
         assertEquals(5,d.deleteBack().val,1e-11);
         assertEquals(0,d.getSize());
+        assertEquals(null, d.getFront());
+        assertEquals(null, d.getBack());
         d.deleteBack();
         assertEquals(0,d.getSize());
+        assertEquals(null, d.getFront());
+        assertEquals(null, d.getBack());
     }
 
-    // @Test
-    // public void testToString(){
-    // 	DoubleChain d = new DoubleChain(1.2);
-    // 	d.insertFront(2.1);
-    //     d.insertFront(1.77);
-    //     d.insertBack(-7.34);
-    //     d.insertBack(8);
-    //     assertEquals("<[1.77, 2.1, 1.2, -7.34, 8.0]>",d.toString());
-    // }
+    @Test
+    public void testToString(){
+    	DoubleChain d = new DoubleChain(1.2);
+    	d.insertFront(2.1);
+        d.insertFront(1.77);
+        d.insertBack(-7.34);
+        d.insertBack(8);
+        assertEquals("<[1.77, 2.1, 1.2, -7.34, 8.0]>",d.toString());
+    }
 
     public static void main(String[] args) {
         jh61b.junit.textui.runClasses(TestDoubleChain.class);
