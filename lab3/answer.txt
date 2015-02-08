@@ -1,0 +1,1 @@
+We pass two int i, j to two Integer objects, but when using "==" on Integers, we actually test whether they point to the same object. When boxing int values between -128 and 127, due to interning, the Integers created are actually the same Integer, but when i and j are larger than 127 (i.e. i,j=128), they are boxed into different Integer objects. 
