@@ -72,18 +72,18 @@ public class DoubleChain {
 	
 	/** Returns a string representation of the DoubleChain. 
 	  * This is an extra challenge problem. */
-	public String toString() {
-		String s = "<[";
-		DNode p = head;
-		while (p.next.next!=null){
-			s = s + Double.toString(p.next.val);
-			s = s + ", ";
-			p=p.next;
-		}
-		s = s+ Double.toString(p.next.val);
-		s = s + "]>";
-		return s;
-	}
+	// public String toString() {
+	// 	String s = "<[";
+	// 	DNode p = head;
+	// 	while (p.next.next!=null){
+	// 		s = s + Double.toString(p.next.val);
+	// 		s = s + ", ";
+	// 		p=p.next;
+	// 	}
+	// 	s = s+ Double.toString(p.next.val);
+	// 	s = s + "]>";
+	// 	return s;
+	// }
 
 	public static class DNode {
 		public DNode prev;
