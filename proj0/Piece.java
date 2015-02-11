@@ -2,10 +2,10 @@
 
 public class Piece{
 
-	private boolean isFire;
+	public boolean isFire;
 	public Board b;
 	public int x,y;
-	private String type;
+	public String type;
 
 /** Piece constructor */
 	public Piece(boolean isFire, Board b, int x, int y, String type){
@@ -33,16 +33,56 @@ public class Piece{
 	
 /* if a piece is king, return true */
 	public boolean isKing(){
-		return type.equals("king");
+		return (type.equals("pawn-king")||type.equals("bomb-king")||type.equals("shield-king"));
 	}
 
 /* if a piece is shield, return true */
 	public boolean isShield(){
-		return type.equals("shield");
+		return (type.equals("shield")||type.equals("shield-king"));
 	}
 
 /* if a piece is bomb, return true */
 	public boolean isBomb(){
-		return type.equals("bomb");
+		return (type.equals("bomb")||type.equals("bomb-king"));
 	}
+
+
+/** move the piece to x,y and capture any piece if applicable
+* 1\ place piece at x,y ; remove the piece at original position on board
+* 3\ change the captured piece to null, regular capture
+* 4\ bomb capture
+*/
+	public void move(int x, int y){
+		int xOld = this.x;
+		int yOld = this.y;
+		b.place(this, x, y);
+		b.place(null, xOld, yOld);
+
+		if (Math.abs(x-xOld)==2){
+			int xMid = (x+xOld)/2;
+			int yMid = (y+yOld)/2;
+			this.b.place(null, xMid, yMid);
+			if (this.isBomb()){
+				bombCapture(x, y);
+			}
+		}
+	}
+
+/** bomb capture
+*/
+
+	private void bombCapture(int x, int y){
+		for (int i=-1; i<2; i++){
+			for (int j=-1; j<2; j++){
+				Piece p = this.b.pieceAt(x+i, y+j);
+				if (p==null){}
+				else if (!p.isShield()){
+					this.b.place(null, x+i, y+j);
+				}
+			}
+		}
+	}
+
+
 }
+

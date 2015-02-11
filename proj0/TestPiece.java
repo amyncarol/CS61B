@@ -47,8 +47,47 @@ public void TestIsKingBombShield(){
 	assertEquals(false, p.isShield());
 }
 
+/** test move method
+*/
+@Test
+public void TestMove(){
+	Board b = new Board(true);
+	Piece p = new Piece(true, b, 0, 0, "pawn");
+	b.place(p, 1, 3);
+	p = new Piece(false, b, 0, 0, "king");
+	b.place(p, 2, 4);
 
+	Piece p1 = b.pieceAt(1, 3);
+	p1.move(3, 5);
+	assertEquals(null, b.pieceAt(2, 4));
+	assertEquals(null, b.pieceAt(1, 3));
+}
 
+/** test bomb capture
+*/
+@Test
+public void TestMove2(){
+	Board b = new Board(true);
+	Piece p = new Piece(false, b, 0, 0, "bomb");
+	b.place(p, 3, 5);
+	p = new Piece(true, b, 0, 0, "bomb");
+	b.place(p, 4, 4);
+	p = new Piece(true, b, 0, 0, "bomb");
+	b.place(p, 6, 4);
+	p = new Piece(true, b, 0, 0, "bomb");
+	b.place(p, 6, 2);
+	p = new Piece(true, b, 0, 0, "shield");
+	b.place(p, 4, 2);
+
+	Piece p1 = b.pieceAt(3, 5);
+	p1.move(5, 3);
+	assertEquals(null, b.pieceAt(5, 3));
+	assertEquals(null, b.pieceAt(3, 5));
+	assertEquals(null, b.pieceAt(4, 4));
+	assertEquals(null, b.pieceAt(6, 4));
+	assertEquals(null, b.pieceAt(6, 2));
+	assertEquals("shield", b.pieceAt(4, 2).type);
+}
 
 
 

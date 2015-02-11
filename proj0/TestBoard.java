@@ -23,6 +23,10 @@ public void TestPieceAt(){
 	assertEquals(null,p);
 	p = b.pieceAt(0,1);
 	assertEquals(null,p);
+
+	b.place(newPiece, 5, 7);
+	p = b.pieceAt(5, 7);
+	assertEquals("pawn-king", p.type);
 } 
 
 /** test if canSelect() and select() can work
@@ -58,7 +62,7 @@ public void TestCanSelect2(){
 public void TestCanSelect3(){
 	Board b = new Board(false); 
 	Piece newPiece = new Piece(false, b, 0, 0, "pawn");
-	Piece newPiece2 = new Piece(true, b, 0, 0, "king");
+	Piece newPiece2 = new Piece(true, b, 0, 0, "pawn-king");
 	b.place(newPiece, 6, 2);
 	b.place(newPiece2, 5, 3);
 	assertEquals(true, b.canSelect(5, 3));
@@ -67,10 +71,13 @@ public void TestCanSelect3(){
 	assertEquals(true, b.canSelect(7, 1));
 }
 
-
-
-
-
+/** test canEndTurn 
+*/
+@Test
+public void TestCanEndTurn(){
+	Board b = new Board(false); 
+	assertEquals(false, b.canEndTurn());
+}
 
  public static void main(String[] args) {
         jh61b.junit.textui.runClasses(TestBoard.class);

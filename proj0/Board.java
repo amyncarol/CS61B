@@ -11,11 +11,11 @@ public class Board{
     private static Piece[][] pieces = new Piece[N][N];
     private static Board b = new Board(false);
     private static boolean[][] pieceSelect = new boolean[N][N];
-    private static boolean isFiresTurn = true; //cannot modify yet
+    private static boolean isFiresTurn = true;
     private static boolean hasSelectedPiece = false;
     private static int[] selectedPieceCoodinates = new int[2];
     private static boolean hasSelectedSquare = false;
-    private static boolean hasMoved = false; //cannot modify yest
+    private static boolean hasMoved = false; //cannot modify yet
 
     /** Draws an N x N board. Adapted from:
         http://introcs.cs.princeton.edu/java/15inout/CheckerBoard.java.html
@@ -119,14 +119,43 @@ public class Board{
 		}
 	}
 
+/** place a piece at x,y, if reaches the other end, crown it
+ * also can place null at x,y 
+*/
 	public void place(Piece p, int x, int y){
 		if (x<0 || x>=N || y<0 || y>=N){
 		} else {
-			p.x=x;
-			p.y=y;
+			if (p!=null) {
+				p.x=x;
+				p.y=y;
+				if (canCrown(p)) {
+					crown(p);
+				}
+			}
 			pieces[x][y]=p;
 		}
 	}
+/** whether can crown
+*/
+	private boolean canCrown(Piece p){
+		boolean shouldReachEnd = ((p.y==(N-1) && p.isFire()) || (p.y==0) && !p.isFire());
+		return ((!p.isKing() && shouldReachEnd));
+	}
+/** crown a piece
+*/
+	private void crown(Piece p){
+		if (p.type.equals("pawn")){
+			p.type = "pawn-king";
+		}
+		if (p.type.equals("shield")){
+			p.type = "shield-king";
+		}
+		if (p.type.equals("bomb")){
+			p.type = "bomb-king";
+		}
+	}
+
+
 
 	public boolean canSelect(int x, int y){
 		if (pieces[x][y]!=null){
@@ -205,6 +234,33 @@ public class Board{
 			hasSelectedSquare = true;
 			hasSelectedPiece = false;
 		}
+	}
+
+	/** return true if can End my turn 
+	*/
+
+	public boolean canEndTurn(){
+		if (hasMoved){
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/** to end my turn 
+	 * 1\ exchange turn 
+	 * 2\ reset hasMoved
+	 * 3\ reset hasSelectedPiece and hasSelectedSquare
+	 * 4\ reset selectedPieceCoodinates
+	 * 5\ reset pieceSelect
+	*/ 
+	public void endTurn(){
+		isFiresTurn = (!isFiresTurn);
+		hasMoved = false;
+		hasSelectedPiece = false;
+		hasSelectedSquare = false;
+		selectedPieceCoodinates = new int[2];
+		pieceSelect = new boolean[N][N];
 	}
 
 	public static void main(String[] args) {
