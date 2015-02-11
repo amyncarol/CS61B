@@ -6,6 +6,8 @@ public class Piece{
 	public Board b;
 	public int x,y;
 	public String type;
+	private int xOld;
+	private int yOld;
 
 /** Piece constructor */
 	public Piece(boolean isFire, Board b, int x, int y, String type){
@@ -53,10 +55,10 @@ public class Piece{
 * 4\ bomb capture
 */
 	public void move(int x, int y){
-		int xOld = this.x;
-		int yOld = this.y;
+		xOld = this.x;
+		yOld = this.y;
 		b.place(this, x, y);
-		b.place(null, xOld, yOld);
+		b.place(null, xOld, yOld); //should implement remove in move???
 
 		if (Math.abs(x-xOld)==2){
 			int xMid = (x+xOld)/2;
@@ -82,6 +84,30 @@ public class Piece{
 			}
 		}
 	}
+
+/** Returns whether or not this Piece has captured another piece this turn.
+*/
+	public boolean hasCaptured(){
+		if(Math.abs(x-xOld)==2){
+			return true;
+		} else {
+			return false;
+		}
+	}
+ 
+/** Called at the end of each turn on the Piece that moved. 
+ * Makes sure the piece's hasCaptured() value returns to false.
+ */
+public void doneCapturing(){
+	xOld = x;
+	yOld = y;
+}
+
+
+
+
+
+
 
 
 }

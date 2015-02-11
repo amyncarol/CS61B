@@ -47,7 +47,7 @@ public void TestIsKingBombShield(){
 	assertEquals(false, p.isShield());
 }
 
-/** test move method
+/** test move method & hasCapture()
 */
 @Test
 public void TestMove(){
@@ -61,6 +61,8 @@ public void TestMove(){
 	p1.move(3, 5);
 	assertEquals(null, b.pieceAt(2, 4));
 	assertEquals(null, b.pieceAt(1, 3));
+	assertEquals("pawn",p1.type);
+	assertEquals(true, p1.hasCaptured());
 }
 
 /** test bomb capture
@@ -89,7 +91,25 @@ public void TestMove2(){
 	assertEquals("shield", b.pieceAt(4, 2).type);
 }
 
+/** test hasCapture() & doneCapturing()
+*/
+@Test
+public void TestCapture(){
+	Board b = new Board(true);
+	Piece p = new Piece(true, b, 0, 0, "pawn");
+	b.place(p, 1, 3);
+	p = new Piece(false, b, 0, 0, "king");
+	b.place(p, 2, 4);
 
+	Piece p1 = b.pieceAt(1, 3);
+	p1.move(3, 5);
+	assertEquals(null, b.pieceAt(2, 4));
+	assertEquals(null, b.pieceAt(1, 3));
+	assertEquals("pawn",p1.type);
+	assertEquals(true, p1.hasCaptured());
+	p1.doneCapturing();
+	assertEquals(false, p1.hasCaptured());
+}
 
 
 

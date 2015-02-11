@@ -112,7 +112,7 @@ public class Board{
     
 
 	public Piece pieceAt(int x, int y){
-		if (x<0 || x>=N || y<0 || y>=N){
+		if (outOfBound(x, y)){
 			return null;
 		} else{
 			return pieces[x][y];
@@ -123,7 +123,7 @@ public class Board{
  * also can place null at x,y 
 */
 	public void place(Piece p, int x, int y){
-		if (x<0 || x>=N || y<0 || y>=N){
+		if (outOfBound(x, y)){
 		} else {
 			if (p!=null) {
 				p.x=x;
@@ -135,12 +135,42 @@ public class Board{
 			pieces[x][y]=p;
 		}
 	}
+
+/** test if out of bound
+*/
+
+	private boolean outOfBound(int x, int y){
+		return (x<0 || x>=N || y<0 || y>=N);
+	}
+
+/** Executes a remove. Returns the piece that was removed. 
+ * If the input (x, y) is out of bounds, returns null and prints 
+ * an appropriate message. If there is no piece at (x, y), returns
+ * null and prints an appropriate message.
+ */
+
+	public Piece remove(int x, int y){
+		if (outOfBound(x, y)){
+			System.out.println("the coodinates (x, y) are outside the board!");
+			return null;
+		} else{
+			Piece p = pieceAt(x, y);
+			if (p==null) {
+				System.out.println("no piece at coodinates (x, y)!");
+			}
+			place(null ,x, y);
+			return p;
+		}
+
+	}
+
 /** whether can crown
 */
 	private boolean canCrown(Piece p){
 		boolean shouldReachEnd = ((p.y==(N-1) && p.isFire()) || (p.y==0) && !p.isFire());
 		return ((!p.isKing() && shouldReachEnd));
 	}
+
 /** crown a piece
 */
 	private void crown(Piece p){
@@ -178,10 +208,13 @@ public class Board{
 		} else {
 			int xi=selectedPieceCoodinates[0];
 			int yi=selectedPieceCoodinates[1];
+			Piece p = pieceAt(xi, yi);
 			if ((!hasMoved) && validMove(xi,yi,xf,yf)){
 				return true;
+			} else if (p.hasCaptured() && validMove(xi,yi,xf,yf) && (Math.abs(xi-xf)==2)) {
+				return true;
 			} else {
-				return false;  //hasn't consider multiple capture yet!!!
+				return false;  
 			}
 		}
 	}
@@ -262,6 +295,62 @@ public class Board{
 		selectedPieceCoodinates = new int[2];
 		pieceSelect = new boolean[N][N];
 	}
+	/** Returns the winner of the game: "Fire", "Water", "No one",
+	 * or null. If only fire pieces remain on the board, fire wins. 
+	 * If only water pieces remain, water wins. If no pieces remain 
+	 * (consider an explosion capture), no one wins. If the game is 
+	 * still in progress (ie there are pieces from both sides still 
+	 * on the board) return null. Assume there is no stalemate 
+	 * situation in which the current player has pieces but cannot 
+	 * legally move any of them (In this event, just leave it at null). 
+	 * Determine the winner solely by the number of pieces belonging 
+	 * to each team.
+	 */
+	public String winner(){
+		if (existFire() && existWater()){
+			return null;
+		} else if (existWater()){
+			return "Water";
+		} else if (existFire()){
+			return "Fire";
+		} else {
+			return "No one";
+		}
+	}
+/** whether there is fire piece exist on the board
+ */
+	private boolean existFire(){
+		for (int i = 0; i < N; i++) {
+           for (int j = 0; j < N; j++) {
+           		Piece p = pieceAt(i, j);
+           		if (p!=null){
+           			if (p.isFire){
+           				return true;
+           			}
+           		}
+           	}
+		}
+		return false;
+	}
+
+/** whether there is water piece exist on the board
+ */
+	private boolean existWater(){
+		for (int i = 0; i < N; i++) {
+           for (int j = 0; j < N; j++) {
+           		Piece p = pieceAt(i, j);
+           		if (p!=null){
+           			if (!p.isFire){
+           				return true;
+           			}
+           		}
+           	}
+		}
+		return false;
+	}
+
+
+
 
 	public static void main(String[] args) {
         StdDrawPlus.setXscale(0, N);
