@@ -2,10 +2,10 @@
 
 public class Piece{
 
-	public boolean isFire;
-	public Board b;
-	public int x,y;
-	public String type;
+	private boolean isFire;   //make all the fields private
+	private Board b;
+	private int x,y;
+	private String type;
 	private int xOld;
 	private int yOld;
 
@@ -58,6 +58,11 @@ public class Piece{
 		xOld = this.x;
 		yOld = this.y;
 		b.place(this, x, y);
+		this.x=x;
+		this.y=y;
+		if (canCrown()) {
+					crown();
+				}
 		b.place(null, xOld, yOld); 
 
 		if (Math.abs(x-xOld)==2){
@@ -67,6 +72,28 @@ public class Piece{
 			if (this.isBomb()){
 				bombCapture(x, y);
 			}
+		}
+	}
+
+/** whether can crown
+*/
+	private boolean canCrown(){
+		int N=8;
+		boolean shouldReachEnd = ((y==(N-1) && isFire()) || (y==0) && !isFire());
+		return ((!isKing() && shouldReachEnd));
+	}
+
+/** crown a piece
+*/
+	private void crown(){
+		if (type.equals("pawn")){
+			type = "pawn-king";
+		}
+		if (type.equals("shield")){
+			type = "shield-king";
+		}
+		if (type.equals("bomb")){
+			type = "bomb-king";
 		}
 	}
 

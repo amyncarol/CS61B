@@ -9,7 +9,7 @@ public class Board{
     private boolean isFiresTurn = true;
     private boolean hasSelectedPiece = false;
     private int[] selectedPieceCoodinates = new int[2];
-    private boolean hasSelectedSquare = false;
+    //private boolean hasSelectedSquare = false;
     private boolean hasMoved = false; 
   
 
@@ -70,41 +70,41 @@ public class Board{
 					if (p.isFire()){
 						if (p.isBomb()){
 							if (p.isKing()){
-							StdDrawPlus.picture(p.x + .5, p.y + .5, "img/bomb-fire-crowned.png", 1, 1);
+							StdDrawPlus.picture(i + .5, j + .5, "img/bomb-fire-crowned.png", 1, 1);
 					    	} else {
-					    	StdDrawPlus.picture(p.x + .5, p.y + .5, "img/bomb-fire.png", 1, 1);
+					    	StdDrawPlus.picture(i + .5, j + .5, "img/bomb-fire.png", 1, 1);
 					   		} 
 						} else if (p.isShield()){
 							if (p.isKing()){
-							StdDrawPlus.picture(p.x + .5, p.y + .5, "img/shield-fire-crowned.png", 1, 1);
+							StdDrawPlus.picture(i + .5, j + .5, "img/shield-fire-crowned.png", 1, 1);
 					    	} else {
-					    	StdDrawPlus.picture(p.x + .5, p.y + .5, "img/shield-fire.png", 1, 1);
+					    	StdDrawPlus.picture(i + .5, j + .5, "img/shield-fire.png", 1, 1);
 					   		} 
 						} else {
 							if (p.isKing()){
-							StdDrawPlus.picture(p.x + .5, p.y + .5, "img/pawn-fire-crowned.png", 1, 1);
+							StdDrawPlus.picture(i + .5, j + .5, "img/pawn-fire-crowned.png", 1, 1);
 					    	} else {
-					    	StdDrawPlus.picture(p.x + .5, p.y + .5, "img/pawn-fire.png", 1, 1);
+					    	StdDrawPlus.picture(i + .5, j + .5, "img/pawn-fire.png", 1, 1);
 					   		}
 						}
 					} else {
 						if (p.isBomb()){
 							if (p.isKing()){
-							StdDrawPlus.picture(p.x + .5, p.y + .5, "img/bomb-water-crowned.png", 1, 1);
+							StdDrawPlus.picture(i + .5, j + .5, "img/bomb-water-crowned.png", 1, 1);
 					    	} else {
-					    	StdDrawPlus.picture(p.x + .5, p.y + .5, "img/bomb-water.png", 1, 1);
+					    	StdDrawPlus.picture(i + .5, j + .5, "img/bomb-water.png", 1, 1);
 					   		} 
 						} else if (p.isShield()){
 							if (p.isKing()){
-							StdDrawPlus.picture(p.x + .5, p.y + .5, "img/shield-water-crowned.png", 1, 1);
+							StdDrawPlus.picture(i + .5, j + .5, "img/shield-water-crowned.png", 1, 1);
 					    	} else {
-					    	StdDrawPlus.picture(p.x + .5, p.y + .5, "img/shield-water.png", 1, 1);
+					    	StdDrawPlus.picture(i + .5, j + .5, "img/shield-water.png", 1, 1);
 					   		} 
 						} else {
 							if (p.isKing()){
-							StdDrawPlus.picture(p.x + .5, p.y + .5, "img/pawn-water-crowned.png", 1, 1);
+							StdDrawPlus.picture(i + .5, j + .5, "img/pawn-water-crowned.png", 1, 1);
 					    	} else {
-					    	StdDrawPlus.picture(p.x + .5, p.y + .5, "img/pawn-water.png", 1, 1);
+					    	StdDrawPlus.picture(i + .5, j + .5, "img/pawn-water.png", 1, 1);
 					   		}
 						}
 					}
@@ -128,13 +128,13 @@ public class Board{
 	public void place(Piece p, int x, int y){
 		if (outOfBound(x, y)){
 		} else {
-			if (p!=null) {
-				p.x=x;
-				p.y=y;
-				if (canCrown(p)) {
-					crown(p);
-				}
-			}
+			//if (p!=null) {
+				//p.x=x;
+				//p.y=y;
+				//if (canCrown(p)) {
+				//	crown(p);
+				//}
+			//}
 			pieces[x][y]=p;
 		}
 	}
@@ -167,26 +167,26 @@ public class Board{
 
 	}
 
-/** whether can crown
-*/
-	private boolean canCrown(Piece p){
-		boolean shouldReachEnd = ((p.y==(N-1) && p.isFire()) || (p.y==0) && !p.isFire());
-		return ((!p.isKing() && shouldReachEnd));
-	}
+// /** whether can crown
+// */
+// 	private boolean canCrown(Piece p){
+// 		boolean shouldReachEnd = ((p.y==(N-1) && p.isFire()) || (p.y==0) && !p.isFire());
+// 		return ((!p.isKing() && shouldReachEnd));
+// 	}
 
-/** crown a piece
-*/
-	private void crown(Piece p){
-		if (p.type.equals("pawn")){
-			p.type = "pawn-king";
-		}
-		if (p.type.equals("shield")){
-			p.type = "shield-king";
-		}
-		if (p.type.equals("bomb")){
-			p.type = "bomb-king";
-		}
-	}
+// /** crown a piece
+// */
+// 	private void crown(Piece p){
+// 		if (p.type.equals("pawn")){
+// 			p.type = "pawn-king";
+// 		}
+// 		if (p.type.equals("shield")){
+// 			p.type = "shield-king";
+// 		}
+// 		if (p.type.equals("bomb")){
+// 			p.type = "bomb-king";
+// 		}
+// 	}
 
 
 
@@ -268,7 +268,7 @@ public class Board{
 			selectedPieceCoodinates[0]=x;
 			selectedPieceCoodinates[1]=y;
 		} else {
-			hasSelectedSquare = true;
+			//hasSelectedSquare = true;
 			int xi = selectedPieceCoodinates[0];
 			int yi = selectedPieceCoodinates[1];
 			Piece p = pieceAt(xi, yi);
@@ -301,7 +301,7 @@ public class Board{
 		isFiresTurn = (!isFiresTurn);
 		hasMoved = false;
 		hasSelectedPiece = false;
-		hasSelectedSquare = false;
+		//hasSelectedSquare = false;
 		selectedPieceCoodinates = new int[2];
 		pieceSelect = new boolean[N][N];	
 	}
@@ -334,7 +334,7 @@ public class Board{
            for (int j = 0; j < N; j++) {
            		Piece p = pieceAt(i, j);
            		if (p!=null){
-           			if (p.isFire){
+           			if (p.isFire()){
            				return true;
            			}
            		}
@@ -350,7 +350,7 @@ public class Board{
            for (int j = 0; j < N; j++) {
            		Piece p = pieceAt(i, j);
            		if (p!=null){
-           			if (!p.isFire){
+           			if (!p.isFire()){
            				return true;
            			}
            		}
