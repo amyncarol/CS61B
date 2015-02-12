@@ -63,7 +63,7 @@ public class Piece{
 		if (Math.abs(x-xOld)==2){
 			int xMid = (x+xOld)/2;
 			int yMid = (y+yOld)/2;
-			this.b.place(null, xMid, yMid);
+			this.b.place(null, xMid, yMid);  //removes 
 			if (this.isBomb()){
 				bombCapture(x, y);
 			}

@@ -11,7 +11,7 @@ public class Board{
     private int[] selectedPieceCoodinates = new int[2];
     private boolean hasSelectedSquare = false;
     private boolean hasMoved = false; 
-    private Piece p;
+  
 
 	public Board(boolean shouldBeEmpty){
 		this.shouldBeEmpty=shouldBeEmpty;
@@ -212,6 +212,9 @@ public class Board{
 			int xi=selectedPieceCoodinates[0];
 			int yi=selectedPieceCoodinates[1];
 			Piece p = pieceAt(xi, yi);
+			if (p==null){
+				return false; //bomb has been removed!! so no piece at (xi, yi)!!
+			}
 			if ((!hasMoved) && validMove(xi,yi,xf,yf)){
 				return true;
 			} else if (p.hasCaptured() && validMove(xi,yi,xf,yf) && (Math.abs(xi-xf)==2)) {
@@ -258,16 +261,18 @@ public class Board{
 	}
 
 	public void select(int x, int y){
-		if (canSelect(x,y)){
 			pieceSelect = new boolean[N][N];
 			pieceSelect[x][y]=true;
-		}
 		if (pieces[x][y]!=null){
 			hasSelectedPiece = true;
 			selectedPieceCoodinates[0]=x;
 			selectedPieceCoodinates[1]=y;
 		} else {
 			hasSelectedSquare = true;
+			int xi = selectedPieceCoodinates[0];
+			int yi = selectedPieceCoodinates[1];
+			Piece p = pieceAt(xi, yi);
+			p.move(x, y); 
 			hasMoved = true; 
 			selectedPieceCoodinates[0]=x;
 			selectedPieceCoodinates[1]=y;  //test if can work
@@ -298,7 +303,7 @@ public class Board{
 		hasSelectedPiece = false;
 		hasSelectedSquare = false;
 		selectedPieceCoodinates = new int[2];
-		pieceSelect = new boolean[N][N];
+		pieceSelect = new boolean[N][N];	
 	}
 	/** Returns the winner of the game: "Fire", "Water", "No one",
 	 * or null. If only fire pieces remain on the board, fire wins. 
@@ -355,35 +360,16 @@ public class Board{
 	}
 
 	private void mouseSelect(){
-		if (this.canEndTurn()){
-			if (StdDrawPlus.isSpacePressed()){
-        	return;
-        	}
-        }
 		if (StdDrawPlus.mousePressed()) {
-            double xDouble = StdDrawPlus.mouseX();
-            double yDouble = StdDrawPlus.mouseY();
-            int x = (int) xDouble;
-            int y = (int) yDouble;
-            if (this.canSelect(x, y)){
-            	Piece pTest = this.pieceAt(x, y);
-            	if (pTest!=null){
-            		this.select(x, y);
-            		this.drawBoard(this.N);
-            		this.p = pTest;
-            		this.mouseSelect();
-            	}
-            	if (pTest==null){
-            		this.p.move(x, y);
-            		this.select(x, y);
-            		this.drawBoard(this.N);
-            		if (Math.abs(this.p.x-x)==2) {
-            			this.remove((this.p.x+x)/2,(this.p.y+y)/2);
-            		}
-            		this.mouseSelect();
-               	}
-            }
-        }	
+		            double xDouble = StdDrawPlus.mouseX();
+		            double yDouble = StdDrawPlus.mouseY();
+		            int x = (int) xDouble;
+		            int y = (int) yDouble;
+		            if (this.canSelect(x, y)){
+		            		this.select(x, y);
+		            		this.drawBoard(this.N);
+	            	}
+		}
 	}	
 
 	public static void main(String[] args) {
@@ -393,16 +379,18 @@ public class Board{
         StdDrawPlus.setYscale(0, N);
         b.initializePieces(N);
         b.drawBoard(N);
-        StdDrawPlus.show(100);
         while (b.winner()==null){
         	while (!b.canEndTurn()){
         		b.mouseSelect();
-        	}
-        	b.endTurn();
+        	} 
+        	while (b.canEndTurn()){
+        		if (StdDrawPlus.isSpacePressed()){
+        			b.endTurn();
+        	    } else {
+        	    	b.mouseSelect();
+        	    }
+	        }
 	    }
-	    b.drawBoard(N);
 	}
     
-    
-
 }

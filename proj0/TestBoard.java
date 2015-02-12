@@ -130,15 +130,39 @@ public void TestCanSelect4(){
 	b.select(2, 4);
 	assertEquals(true, b.canSelect(4, 2));
 	b.select(4, 2);
-	Piece p = b.pieceAt(2, 4);
-	p.move(4, 2);
 	b.remove(3, 3);
 	assertEquals(true, b.canSelect(6, 0));
 	b.select(6, 0);
-	p.move(6, 0);
 	b.remove(5, 1);
+	Piece p = b.pieceAt(6, 0);
 	assertEquals("pawn-king", p.type);
 	assertEquals(false, b.canSelect(7, 1));
+}
+
+/** test bomb capture
+*/
+@Test
+public void TestCanSelect5(){
+	Board b = new Board(true); 
+	Piece newPiece = new Piece(true, b, 0, 0, "bomb");
+	Piece newPiece2 = new Piece(false, b, 0, 0, "bomb");
+	Piece newPiece3 = new Piece(false, b, 0, 0, "shield");
+	b.place(newPiece, 2, 2);
+	b.place(newPiece2, 3, 3);
+	b.place(newPiece3, 5, 3);
+	assertEquals(true, b.canSelect(2, 2));
+	b.select(2, 2);
+	assertEquals(true, b.canSelect(4, 4));
+	b.select(4, 4);
+	for (int i=0; i<8; i++){
+		for (int j=0; j<8; j++){
+			assertEquals(false, b.canSelect(i, j));
+		}
+	}
+	assertEquals(true,b.canEndTurn());
+	assertEquals("shield", b.pieceAt(5, 3).type);
+	b.endTurn();
+	assertEquals(false,b.canEndTurn());	
 }
 
  public static void main(String[] args) {
