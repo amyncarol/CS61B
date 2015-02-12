@@ -10,7 +10,7 @@ public class TestBoard{
 /** test pieceAt method */
 @Test
 public void TestPieceAt(){
-	Board b = new Board(false); 
+	Board b = new Board(true); 
 	Piece newPiece = new Piece(true, b, 1, 3, "pawn");
 	b.place(newPiece, 5, 3);
 	Piece p = b.pieceAt(5, 3);
@@ -36,7 +36,7 @@ public void TestPieceAt(){
 */
 @Test
 public void TestCanSelect(){
-	Board b = new Board(false); 
+	Board b = new Board(true); 
 	Piece newPiece = new Piece(true, b, 1, 3, "pawn");
 	b.place(newPiece, 5, 3);
 	assertEquals(true, b.canSelect(5, 3));
@@ -49,7 +49,7 @@ public void TestCanSelect(){
 */
 @Test
 public void TestCanSelect2(){
-	Board b = new Board(false); 
+	Board b = new Board(true); 
 	Piece newPiece = new Piece(true, b, 1, 3, "pawn");
 	b.place(newPiece, 5, 3);
 	assertEquals(false, b.canSelect(4, 4));
@@ -60,7 +60,7 @@ public void TestCanSelect2(){
 */
 @Test
 public void TestCanSelect3(){
-	Board b = new Board(false); 
+	Board b = new Board(true); 
 	Piece newPiece = new Piece(false, b, 0, 0, "pawn");
 	Piece newPiece2 = new Piece(true, b, 0, 0, "pawn-king");
 	b.place(newPiece, 6, 2);
@@ -71,35 +71,11 @@ public void TestCanSelect3(){
 	assertEquals(true, b.canSelect(7, 1));
 }
 
-/** test multiple capture
-*/
-@Test
-public void TestCanSelect4(){
-	Board b = new Board(false); 
-	Piece newPiece = new Piece(false, b, 0, 0, "pawn");
-	Piece newPiece2 = new Piece(true, b, 0, 0, "pawn-king");
-	Piece newPiece3 = new Piece(true, b, 0, 0, "pawn-king");
-	b.place(newPiece, 2, 4);
-	b.place(newPiece2, 3, 3);
-	b.place(newPiece3, 5, 1);
-	assertEquals(true, b.canSelect(2, 4));
-	b.select(2, 4);
-	assertEquals(true, b.canSelect(4, 2));
-	b.select(4, 2);
-	Piece p = b.pieceAt(2, 4);
-	p.move(4, 2);
-	assertEquals(true, b.canSelect(6, 0));
-	b.select(6, 0);
-	p.move(6, 0);
-	assertEquals("pawn-king", p.type);
-	assertEquals(false, b.canSelect(7, 1));
-}
-
 /** test canEndTurn 
 */
 @Test
 public void TestCanEndTurn(){
-	Board b = new Board(false); 
+	Board b = new Board(true); 
 	assertEquals(false, b.canEndTurn());
 }
 
@@ -107,7 +83,7 @@ public void TestCanEndTurn(){
 */
 @Test
 public void TestRemove(){
-	Board b = new Board(false); 
+	Board b = new Board(true); 
 	Piece newPiece = new Piece(false, b, 0, 0, "pawn");
 	Piece newPiece2 = new Piece(true, b, 0, 0, "pawn-king");
 	b.place(newPiece, 6, 2);
@@ -124,19 +100,46 @@ public void TestRemove(){
  */
 @Test
 public void TestWinner(){
-	Board b = new Board(false); 
+	Board b = new Board(true); 
 	Piece newPiece = new Piece(false, b, 0, 0, "pawn");
-	Piece newPiece2 = new Piece(true, b, 0, 0, "pawn-king");
+	Piece newPiece2 = new Piece(true, b, 0, 0, "pawn");
 	b.place(newPiece, 6, 2);
 	b.place(newPiece2, 5, 3);
 	assertEquals(null, b.winner());
 	b.remove(6, 2);
+	assertEquals(null, b.pieceAt(6, 2));
 	assertEquals("Fire", b.winner());
-	b.remove(5, 3);
+	Piece p = b.remove(5, 3);
+	assertEquals(null, b.pieceAt(5, 3));
+	assertEquals(true, p.isFire());
 	assertEquals("No one", b.winner());
 }
 
-
+/** test multiple capture
+*/
+@Test
+public void TestCanSelect4(){
+	Board b = new Board(true); 
+	Piece newPiece = new Piece(true, b, 0, 0, "pawn-king");
+	Piece newPiece2 = new Piece(false, b, 0, 0, "pawn");
+	Piece newPiece3 = new Piece(false, b, 0, 0, "pawn-king");
+	b.place(newPiece, 2, 4);
+	b.place(newPiece2, 3, 3);
+	b.place(newPiece3, 5, 1);
+	assertEquals(true, b.canSelect(2, 4));
+	b.select(2, 4);
+	assertEquals(true, b.canSelect(4, 2));
+	b.select(4, 2);
+	Piece p = b.pieceAt(2, 4);
+	p.move(4, 2);
+	b.remove(3, 3);
+	assertEquals(true, b.canSelect(6, 0));
+	b.select(6, 0);
+	p.move(6, 0);
+	b.remove(5, 1);
+	assertEquals("pawn-king", p.type);
+	assertEquals(false, b.canSelect(7, 1));
+}
 
  public static void main(String[] args) {
         jh61b.junit.textui.runClasses(TestBoard.class);

@@ -58,7 +58,7 @@ public class Piece{
 		xOld = this.x;
 		yOld = this.y;
 		b.place(this, x, y);
-		b.place(null, xOld, yOld); //should implement remove in move???
+		b.place(null, xOld, yOld); 
 
 		if (Math.abs(x-xOld)==2){
 			int xMid = (x+xOld)/2;
