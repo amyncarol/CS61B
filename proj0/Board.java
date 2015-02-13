@@ -4,7 +4,7 @@ public class Board{
 
 	private boolean shouldBeEmpty;
 	private int N = 8;
-    private Piece[][] pieces = new Piece[N][N];
+    private Piece[][] pieces;
     private boolean[][] pieceSelect = new boolean[N][N];
     private boolean isFiresTurn = true;
     private boolean hasSelectedPiece = false;
@@ -15,6 +15,12 @@ public class Board{
 
 	public Board(boolean shouldBeEmpty){
 		this.shouldBeEmpty=shouldBeEmpty;
+		if (!shouldBeEmpty){
+			initializePieces(N);
+		}
+		else {
+			pieces = new Piece[N][N];
+		}
 	}
 
 
@@ -39,6 +45,7 @@ public class Board{
     }
 
     private void initializePieces(int N){
+    	pieces = new Piece[N][N];
     	for (int i = 0; i < N; i++) {
     		for (int j=0; j < N; j++){
     			if ((i + j) % 2 == 0){
@@ -377,7 +384,6 @@ public class Board{
 		int N = 8;
         StdDrawPlus.setXscale(0, N);
         StdDrawPlus.setYscale(0, N);
-        b.initializePieces(N);
         b.drawBoard(N);
         while (b.winner()==null){
         	while (!b.canEndTurn()){
