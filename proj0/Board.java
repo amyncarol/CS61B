@@ -251,7 +251,9 @@ public class Board{
 			return true;
 		} else if ((Math.abs(dx)==2)&&(Math.abs(dy)==2)){
 			Piece pMiddle = pieces[xi+dx/2][yi+dy/2];
-			if (pMiddle.isFire()^p.isFire()){
+			if (pMiddle == null){
+				return false;
+			} else if (pMiddle.isFire()^p.isFire()){
 				return true;
 			} else {
 				return false;
