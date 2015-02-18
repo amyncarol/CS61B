@@ -9,7 +9,7 @@ public class SortedComparableList {
     public Comparable head;
     /** Remaining elements of list. */
     public SortedComparableList tail;
-  
+
     /** A list with head HEAD0 and tail TAIL0. */
     public SortedComparableList(Comparable head0, SortedComparableList tail0) {
         head = head0;
@@ -23,42 +23,48 @@ public class SortedComparableList {
 
     /** Inserts Comparable c into its correct location in this list. */
     public void insert(Comparable c) {
-    	SortedComparableList pointer = this;
-    	if (head.compareTo(c) > 0) {
-            tail = new SortedComparableList(pointer.head, pointer.tail);
-            head = c;
-    		return;
-    	}
-        while ((pointer.tail != null) && (pointer.tail.head.compareTo(c) < 0)){
-        	pointer = pointer.tail;
+        if (c != null) {
+            // null check
+            if (c.compareTo(head) < 0) {
+                // edge case: inserting to front of list
+                tail = new SortedComparableList(head, tail);
+                head = c;
+            }
+            else {
+                // inserting into middle or end of list
+                SortedComparableList curr = this;
+                while (curr.tail != null && c.compareTo(curr.tail.head) > 0) {
+                    curr = curr.tail;
+                }
+                curr.tail = new SortedComparableList(c, curr.tail);
+            }
         }
-        pointer.tail = new SortedComparableList(c, pointer.tail);
     }
 
     /** Returns the i-th int in this list.
      *  The first element, which is in location 0, is the 0th element.
      *  Assume i takes on the values [0, length of list - 1]. */
     public Comparable get(int i) {
-    	if (head == null || i == 0) {
+        if (head == null || i == 0) {
             //edge cases
             return head;
         }
-
-        int counter = 0;
-        SortedComparableList pointer = this;
-        while (counter < i) {
-        	pointer = pointer.tail;
-        	counter = counter+1;
+        else {
+            SortedComparableList curr = this;
+            while (curr.tail != null && i != 0) {
+                curr = curr.tail;
+                i--;
+            }
+            return curr.head;
         }
-        return pointer.head;
     }
 
     /** Adds every item in THAT to this list. */
     public void extend(SortedComparableList that) {
-        SortedComparableList pointer = that;
-        while (pointer != null) {
-        	this.insert(pointer.head);
-        	pointer = pointer.tail;
+        SortedComparableList curr = that;
+        while (curr != null) {
+            insert(curr.head);
+            curr = curr.tail;
         }
     }
 
@@ -68,12 +74,12 @@ public class SortedComparableList {
       *
       * This method should NOT modify L. */
     public static SortedComparableList subTail(SortedComparableList L, int start) {
-       	SortedComparableList pointer = L;
-        while (start > 0 && pointer != null){
-        	pointer = pointer.tail;
-        	start = start - 1;
+        if (L == null || start == 0) {
+            return L;
         }
-        return pointer;
+        else {
+            return subTail(L.tail, start-1);
+        }
     }
 
     /** Returns the sublist consisting of LEN items from list L,
@@ -115,16 +121,20 @@ public class SortedComparableList {
      *  output list is [ 0 1 0 3 1 0 ].
      **/
     public void squish() {
-        SortedComparableList pointer = this;
-        while (pointer.tail != null) {
-        	if (pointer.head.compareTo(pointer.tail.head)==0){
-        		pointer.tail = pointer.tail.tail;
-                pointer = pointer.tail;
-        	} else {
-        		pointer = pointer.tail;
-        	}
+        if (tail != null) {
+            SortedComparableList prev = this;
+            SortedComparableList curr = tail;
+            while (curr != null) {
+                if (prev.head.equals(curr.head)) {
+                    prev.tail = curr.tail;
+                    curr = prev.tail;
+                }
+                else {
+                    prev = prev.tail;
+                    curr = prev.tail;
+                }
+            }
         }
-
     }
 
     /** Duplicates each Comparable so that for every original
@@ -138,10 +148,10 @@ public class SortedComparableList {
      *  duplicate.
      **/
     public void twin() {
-        SortedComparableList pointer = this;
-        while (pointer != null) {
-        	pointer.tail = new SortedComparableList(pointer.head, pointer.tail);
-        	pointer = pointer.tail.tail;
+        SortedComparableList prev = this;
+        while (prev != null) {
+            prev.tail = new SortedComparableList(prev.head, prev.tail);
+            prev = prev.tail.tail;
         }
     }
 
@@ -174,6 +184,7 @@ public class SortedComparableList {
     /** Returns true iff X is a SortedComparableList containing the
      *  same sequence of Comparables as THIS. Cannot handle cycles. */
     public boolean equals(Object x) {
+        //make them do this
         if (!(x instanceof SortedComparableList)) {
             return false;
         }
@@ -210,4 +221,6 @@ public class SortedComparableList {
         out.format(")");
         return out.toString();
     }
+
+
 }
