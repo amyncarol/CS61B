@@ -115,6 +115,12 @@ public class SortedComparableList {
      *  output list is [ 0 1 0 3 1 0 ].
      **/
     public void squish() {
+        if (this == null){
+            return;
+        }
+        if (this.tail== null){
+            return;
+        }
         SortedComparableList pointer = this;
         while (pointer.tail != null) {
         	if (pointer.head.compareTo(pointer.tail.head)==0){
