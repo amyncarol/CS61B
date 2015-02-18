@@ -104,6 +104,11 @@ public class TestSortedComparableList {
 	@Test
 	public void TestSquish(){
 		SortedComparableList L = new SortedComparableList();
+		System.out.println("TestSquish---start");
+		System.out.println(L.toString());
+		L.squish();
+		System.out.println(L.toString());
+		System.out.println("TestSquish---end");
 		L.insert(-1);
 		L.insert(3);
 		L.insert(0);
