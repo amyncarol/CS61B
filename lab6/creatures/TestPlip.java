@@ -32,11 +32,16 @@ public class TestPlip {
 
     @Test
     public void testReplicate() {
+        Plip p = new Plip(2);
+        Plip pSon = p.replicate();
+        assertEquals(1.0, p.energy(), 0.01);
+        assertEquals(1.0, pSon.energy(), 0.01);
+        assertNotSame(p, pSon);
 
     }
 
-    //@Test
-    public void testChoose() {
+    @Test
+    public void testChooseNoEmpty() {
         Plip p = new Plip(1.2);
         HashMap<Direction, Occupant> surrounded = new HashMap<Direction, Occupant>();
         surrounded.put(Direction.TOP, new Impassible());
@@ -51,6 +56,40 @@ public class TestPlip {
         Action actual = p.chooseAction(surrounded);
         Action expected = new Action(Action.ActionType.STAY);
 
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testChooseReplicate() {
+        Plip p = new Plip(1.2);
+        HashMap<Direction, Occupant> surrounded = new HashMap<Direction, Occupant>();
+        surrounded.put(Direction.TOP, new Impassible());
+        surrounded.put(Direction.BOTTOM, new Impassible());
+        surrounded.put(Direction.LEFT, new Impassible());
+        surrounded.put(Direction.RIGHT, new Empty());
+
+        //You can create new empties with new Empty();
+        //Despite what the spec says, you cannot test for Cloruses nearby yet.
+        //Sorry!  
+        Action actual = p.chooseAction(surrounded);
+        Action expected = new Action(Action.ActionType.REPLICATE, Direction.RIGHT);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testChooseStay() {
+        Plip p = new Plip(0.8);
+        HashMap<Direction, Occupant> surrounded = new HashMap<Direction, Occupant>();
+        surrounded.put(Direction.TOP, new Impassible());
+        surrounded.put(Direction.BOTTOM, new Impassible());
+        surrounded.put(Direction.LEFT, new Impassible());
+        surrounded.put(Direction.RIGHT, new Empty());
+
+        //You can create new empties with new Empty();
+        //Despite what the spec says, you cannot test for Cloruses nearby yet.
+        //Sorry!  
+        Action actual = p.chooseAction(surrounded);
+        Action expected = new Action(Action.ActionType.STAY);
         assertEquals(expected, actual);
     }
 
