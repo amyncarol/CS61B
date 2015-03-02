@@ -14,8 +14,21 @@ public class ArrayList61BTest {
         L.add(10);
         assertTrue(L.contains(5));        
         assertFalse(L.contains(0));
-
     }
+
+
+    @Test
+    public void testSize() {
+        List<Integer> L = new ArrayList61B<Integer>(2);
+        L.add(1);
+        L.add(10);
+        L.add(2);
+        L.add(10);
+        L.add(4);
+        assertEquals(5, L.size());
+        assertEquals((Integer) 10,L.get(3));
+ 
+    }   
 
     /** Runs tests. */
     public static void main(String[] args) {
