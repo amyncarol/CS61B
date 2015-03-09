@@ -70,7 +70,7 @@ public class WordNet {
 		}      
     }
 
-    void printData() {
+    private void printData() {
     	System.out.println(g);
     	System.out.println(setNumber);
     	System.out.println();
