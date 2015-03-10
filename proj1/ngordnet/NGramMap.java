@@ -91,7 +91,10 @@ public class NGramMap {
         Map<Integer, Long> totalCountsSub = totalCounts.subMap(startYear, true, endYear, true);
         Set<Integer> years = totalCountsSub.keySet();
         for (int i : years) {
-            ts.put(i, countInYear(word, i));
+        	int count = countInYear(word, i);
+        	if (count != 0) {
+            	ts.put(i, count);
+        	}
         }
         return ts;
     }
@@ -101,7 +104,10 @@ public class NGramMap {
         TimeSeries<Integer> ts = new TimeSeries<Integer>();
         Set<Integer> years = totalCounts.keySet();
         for (int i : years) {
-            ts.put(i, countInYear(word, i));
+            int count = countInYear(word, i);
+        	if (count != 0) {
+            	ts.put(i, count);
+        	}
         }
         return ts;
     }
