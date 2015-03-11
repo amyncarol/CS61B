@@ -17,8 +17,8 @@ public class NgordnetUI {
         NGramMap ngm = new NGramMap(wordFile, countFile);
         WordNet wn = new WordNet(synsetFile, hyponymFile);
         System.out.println("\nBased on ngordnetui.config, using the following: "
-                           + wordFile + ", " + countFile + ", " + synsetFile +
-                           ", and " + hyponymFile + ".");
+            + wordFile + ", " + countFile + ", " + synsetFile 
+            + ", and " + hyponymFile + ".");
 
         //set initail startDate and endDate
         TimeSeries<Long> ts = ngm.totalCountHistory();

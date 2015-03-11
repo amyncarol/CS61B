@@ -3,11 +3,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.Collection;
 import java.util.Set;
-import java.util.TreeSet;
 import edu.princeton.cs.introcs.In;
-
-
-
 
 public class NGramMap {
 
@@ -26,7 +22,7 @@ public class NGramMap {
     private void readWords(String wordsFilename) {    
         In wordsFile = new In(wordsFilename);
         String[] wordsLines = wordsFile.readAllLines();       
-        for (int i=0; i<wordsLines.length; i++) {
+        for (int i = 0; i < wordsLines.length; i++) {
             String[] eachline = wordsLines[i].split("\t");
             String word = eachline[0];
             int year = Integer.parseInt(eachline[1]);
@@ -46,7 +42,7 @@ public class NGramMap {
     private void readTotalCounts(String countsFilename) {    
         In countsFile = new In(countsFilename);
         String[] countsLines = countsFile.readAllLines();       
-        for (int i=0; i<countsLines.length; i++) {
+        for (int i = 0; i < countsLines.length; i++) {
             String[] eachline = countsLines[i].split(",");
             int year = Integer.parseInt(eachline[0]);
             long count = Long.parseLong(eachline[1]);
@@ -91,10 +87,10 @@ public class NGramMap {
         Map<Integer, Long> totalCountsSub = totalCounts.subMap(startYear, true, endYear, true);
         Set<Integer> years = totalCountsSub.keySet();
         for (int i : years) {
-        	int count = countInYear(word, i);
-        	if (count != 0) {
-            	ts.put(i, count);
-        	}
+            int count = countInYear(word, i);
+            if (count != 0) {
+                ts.put(i, count);
+            }
         }
         return ts;
     }
@@ -105,9 +101,9 @@ public class NGramMap {
         Set<Integer> years = totalCounts.keySet();
         for (int i : years) {
             int count = countInYear(word, i);
-        	if (count != 0) {
-            	ts.put(i, count);
-        	}
+            if (count != 0) {
+                ts.put(i, count);
+            }
         }
         return ts;
     }
