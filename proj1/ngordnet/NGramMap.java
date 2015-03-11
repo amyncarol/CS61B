@@ -7,11 +7,11 @@ import edu.princeton.cs.introcs.In;
 
 public class NGramMap {
 
-    private TreeMap<Integer, YearlyRecord> words;
+    private TreeMap<Integer, YearlyRecord> wordss;
     private TimeSeries<Long> totalCounts;
     /** Constructs an NGramMap from WORDSFILENAME and COUNTSFILENAME. */
     public NGramMap(String wordsFilename, String countsFilename) {
-        words = new TreeMap<Integer, YearlyRecord>();
+        wordss = new TreeMap<Integer, YearlyRecord>();
         totalCounts = new TimeSeries<Long>();
         readWords(wordsFilename);
         readTotalCounts(countsFilename);
@@ -28,13 +28,13 @@ public class NGramMap {
             int year = Integer.parseInt(eachline[1]);
             int count = Integer.parseInt(eachline[2]);
             YearlyRecord yr;
-            if (words.containsKey(year)) {
-                yr = words.get(year);
+            if (wordss.containsKey(year)) {
+                yr = wordss.get(year);
             } else {
                 yr = new YearlyRecord();
             }
             yr.put(word, count);
-            words.put(year, yr);           
+            wordss.put(year, yr);           
         }   
     }
     /** read in the counts file into a TimeSeries 
@@ -53,8 +53,8 @@ public class NGramMap {
     /** Returns the absolute count of WORD in the given YEAR. If the word
       * did not appear in the given year, return 0. */
     public int countInYear(String word, int year) {
-        if (words.containsKey(year)) {
-            YearlyRecord yr = words.get(year);
+        if (wordss.containsKey(year)) {
+            YearlyRecord yr = wordss.get(year);
             return yr.count(word);
         } else {
             return 0;
@@ -64,10 +64,10 @@ public class NGramMap {
     /** Returns a defensive copy of the YearlyRecord of WORD. */
     public YearlyRecord getRecord(int year) {
         YearlyRecord yr = new YearlyRecord();
-        if (words.containsKey(year)) {
-            Collection<String> wordsOfYear = words.get(year).words();
+        if (wordss.containsKey(year)) {
+            Collection<String> wordsOfYear = wordss.get(year).words();
             for (String word : wordsOfYear) {
-                yr.put(word, words.get(year).count(word));
+                yr.put(word, wordss.get(year).count(word));
             }
             return yr;
         }   else {
@@ -126,7 +126,7 @@ public class NGramMap {
       * STARTYEAR and ENDYEAR. If a word does not exist, ignore it rather
       * than throwing an exception. */
     public TimeSeries<Double> summedWeightHistory(Collection<String> words, 
-                              int startYear, int endYear) {
+                                        int startYear, int endYear) {
         TimeSeries<Double> ts = new TimeSeries<Double>();
         TimeSeries<Double> tsSum = new TimeSeries<Double>();
         for (String word : words) {
@@ -152,7 +152,7 @@ public class NGramMap {
     public TimeSeries<Double> processedHistory(int startYear, int endYear,
                                                YearlyRecordProcessor yrp) {
         TimeSeries<Double> ts = new TimeSeries<Double>();
-        Map<Integer, YearlyRecord> subYear = words.subMap(startYear, true, endYear, true);
+        Map<Integer, YearlyRecord> subYear = wordss.subMap(startYear, true, endYear, true);
         Set<Integer> years = subYear.keySet();
         for (int year : years) {
             ts.put(year, yrp.process(subYear.get(year)));
@@ -163,9 +163,9 @@ public class NGramMap {
     /** Provides processed history of all words ever as processed by YRP. */
     public TimeSeries<Double> processedHistory(YearlyRecordProcessor yrp) {
         TimeSeries<Double> ts = new TimeSeries<Double>();
-        Set<Integer> years = words.keySet();
+        Set<Integer> years = wordss.keySet();
         for (int year : years) {
-            ts.put(year, yrp.process(words.get(year)));
+            ts.put(year, yrp.process(wordss.get(year)));
         }
         return ts;
     }
