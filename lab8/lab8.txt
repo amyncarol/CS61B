@@ -1,89 +1,99 @@
 1. Estimated running times (in big-theta notation):
-function1: Theta(____)
-function2: Theta(____)
-function3: Theta(____)
+function1: Theta(N^2)
+function2: Theta(N)
+function3: Theta(N^3)
 
 Data:
                n         time
-function1:
+function1:    10000      0.213
+			        20000      0.887
+			        40000      3.693
+			        50000	     5.582
 
 
+function2:    100000000   0.484
+              200000000   1.009
+              400000000   1.926
+              500000000   2.46
 
-
-function2:
-
-
-
-
-function3:
-
-
-
+function3:    300   0.189
+			        500   0.898
+			        600   1.55
+			        800   3.725
 
 Experimentally determined running time, assuming runtime is of the form ~aN^b:
 
-function1: ~__N^__
-function2: ~__N^__
-function3: ~__N^__
+function1: ~(1.13E-8)N^1.85
+function2: ~(8.11E-10)N^1.09
+function3: ~(5.57E-9)N^3.04
 
 2. Data:
                               n             time
-function4:
+function4:                 149143           0.257
+                           9367577          2.189
+                           86028157         6.768
+                           654188429        19.486
 
+function5 (best case):    1001             0.678
+                          10001            0.976 
+                          100001           1.156
+                          1000001          1.344
+                          10000001         1.642
 
-
-function5 (best case):
-
-
-
-function5 (worst case):
-
+function5 (worst case):   10000000          0.074
+						              50000000          0.289
+						              100000000         0.606
+						              500000000         2.97
+						              1000000000        6.018
 
 
 
 3. Data:
                               n         time
-ArrayList:
+ArrayList:                  10000       0.075
+							              20000       0.247
+							              40000       0.968
+							              80000       3.958
 
-
-
-
-HashSet:
-
-
-
-
+HashSet:                    500000      0.172
+              							1000000     0.383
+              							2000000     0.677
+              							2500000     0.839
+              							2700000     1.569
+              							3000000     4.326
+              							4000000     5.12
+              							5000000     7.377
 
 Experimentally determined running time:
 
-ArrayList:
-HashSet:
+ArrayList:  O(N)   for inserting and removing a single value
+HashSet:    O(N)   for inserting and removing a single value
 
 4. Data:
                                        n         time
-Insertion sort with array list:
+Insertion sort with array list:      10000       0.063
+                                     20000       0.248
+                                     40000       1.023
+                                     80000       4.32
 
-
-
-
-Insertion sort with linked list:
-
-
-
-
+Insertion sort with linked list:     500         0.057
+                                     1000        0.387
+                                     2000        3.288
+                                     3000        11.424
 
 Experimentally determined running time:
 
-Insertion sort with array:        O(___)
-Insertion sort with linked list:  O(___)
+Insertion sort with array:        O(N^2.08)
+Insertion sort with linked list:  O(N^3.07)
 
-5. Initial guess: O(___)
+5. Initial guess: O(N^1.5)
 
 Data:             n               time
+              1000000            0.237
+              2000000            0.7
+              4000000            2.01
+              8000000            5.701
 
-
-
-
-Experimentally determined running time: O(___)
+Experimentally determined running time: O(N^1.50)
 
 
