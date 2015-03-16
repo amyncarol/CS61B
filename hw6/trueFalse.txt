@@ -1,0 +1,8 @@
+1 F Worst case can be O(N)
+2 F Worst case can be O(N)
+3 F best case can be constant
+4 T N is the upper bound
+5 T N is the upper bound 
+6 T The depth of the tree is log(N) on average, and both put and containsKey go down the tree
+7 F runtime can be constant for best case
+8 O(N^2) worst case can be a unbalanced tree

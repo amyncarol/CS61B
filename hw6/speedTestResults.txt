@@ -1,0 +1,50 @@
+InsertRandomSpeedTest:
+
+             N       runtime
+ULLMap      5000      0.11 
+            10000     0.50
+			20000     2.20
+			23000     3.13
+			25000     3.97
+
+             N       runtime
+BSTMap      100000    0.09
+			200000    0.27
+			400000    0.58
+			800000    1.43
+
+             N       runtime
+TreeMap     100000    0.09
+			200000    0.21
+			400000    0.54
+			800000    1.10
+
+ULLMap  :   O(N^2.7)
+BSTMap  :   O(N^1.2)
+TreeMap :   O(N^1.0)
+
+InsertInOrderSpeedTest:
+             N       runtime
+ULLMap      5000      0.24 
+            10000     0.94
+			20000     6.01    
+			25000     10.4
+
+             N       runtime
+BSTMap      5000      0.25
+            10000     1.32
+			20000     4.65
+			25000     5.02
+			30000     8.75
+
+             N       runtime
+TreeMap     100000    0.13
+			200000    0.16
+			400000    0.31
+			800000    0.69
+
+ULLMap  :   O(N^2.5)
+BSTMap  :   O(N^1.9)
+TreeMap :   O(N^1.1)
+
+The BSTMap is significantly slower when key-value pairs are inserted in lexicographically-increasing order, this is because the tree is extremely unbalanced and thus extremely tall when created this way.
