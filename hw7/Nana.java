@@ -156,7 +156,7 @@ public class Nana {
     /************************ Question #1.4 ************************/
 
     public static final String thereWasCollision() {
-        return "no"; // REPLACE THIS LINE WITH YOUR ANSWER 
+        return "yes"; // REPLACE THIS LINE WITH YOUR ANSWER 
     }
 
     public static final String canGetDrake() {
