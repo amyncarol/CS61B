@@ -23,9 +23,19 @@ public class FibonacciMemo {
      * @param n
      * @return The nth fibonacci number
      */
+
+    private static HashMap<Integer, Integer> fibMap = new HashMap<Integer, Integer>();
+
     public static int fibMemo(int n) {
-        // YOUR CODE HERE
-        return 0;
+        if (fibMap.containsKey(n)) {
+            return fibMap.get(n);
+        } else if (n <= 1) {
+            fibMap.put(n, n);
+            return n;
+        }
+        int fNumber = fibMemo(n - 2) + fibMemo(n - 1);
+        fibMap.put(n, fNumber);
+        return fNumber;
     }
 
     /**
@@ -34,8 +44,8 @@ public class FibonacciMemo {
      * as the 47th Fibonacci number?
      */
     public static String why47() {
-        String answer = "potatoes";
-        answer += ", " + answer + " and tapioca";
+        String answer = "the largest number an int variable can store is 2^31-1, which is smaller than 2,971,215,073";
+        // answer += ", " + answer + " and tapioca";
         return answer;
     }
 

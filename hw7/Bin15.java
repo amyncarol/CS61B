@@ -36,12 +36,20 @@ public class Bin15 {
     
     @Override
     public boolean equals(Object o) {
-        return false; // YOUR CODE HERE
+        Bin15 other = (Bin15) o;
+        return this.myBinStr.equals(other.myBinStr); // YOUR CODE HERE
     }
     
     @Override
     public int hashCode() {
-        return -1; // YOUR CODE HERE
+        int intValue = 0;
+        int multiplier = 1;
+        for (int i = 0; i < 15; i++) {
+            int binary = Character.getNumericValue(myBinStr.charAt(14-i));
+            intValue += binary * multiplier;
+            multiplier *= 2;
+        }
+        return intValue; // YOUR CODE HERE
     }
 
     /* DO THIS LAST, AFTER IMPLEMENTING EVERYTHING
@@ -51,12 +59,16 @@ public class Bin15 {
     in the method followUpAnswer(). 
     */
     public static final int followUpAnswer() {
-        return 42; // YOUR CODE HERE. THIS MAY OR MAY NOT BE CORRECT.
+        return 32; // YOUR CODE HERE. THIS MAY OR MAY NOT BE CORRECT.
     }
     
     public static void main(String[] args) {
         // Optional testing here. Potentially useless information:
-        int c = 0x9 - 1 - 0b01;
+        int c = 0b100100011001101;
+        Bin15 bin = new Bin15("100100011001101");
+        System.out.println(c);
+        System.out.println(bin.hashCode());
+
         // 0x9 means 9 in hexadecimal
         // 1 means 1 in decimal
         // 0b01 means 01 or 1 in binary
