@@ -7,7 +7,7 @@ public class Nana {
 
     public static void main(String[] args) {
         System.out.println("Oh nana, what's myNum?");
-        // The below is potentially useless test code.
+        // The below is potentially useless test code
                 
         
           // Nana weeyana = new Nana(83);
