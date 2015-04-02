@@ -5,7 +5,7 @@ import java.util.Set;
  * For example, you can also say "... implements Map61B<Ben, Jerry>".
  */ 
 public interface Map61B<K, V> {
-    /** Removes all of the mappings from this map. */
+    /* Removes all of the mappings from this map. */
     public void clear();
 
     /* Returns true if this map contains a mapping for the specified key. 

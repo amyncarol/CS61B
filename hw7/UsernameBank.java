@@ -5,10 +5,10 @@ public class UsernameBank {
 
     // Instance variables (remember, they should be private!)
     // YOUR CODE HERE
-    private static Map<String, Integer> badEmails;
-    private static Map<String, Integer> badUsernames;
-    private static Map<Username, String> nameToEmail;
-    private static Map<String, String> emailToName;
+    private Map<String, Integer> badEmails;
+    private Map<String, Integer> badUsernames;
+    private Map<Username, String> nameToEmail;
+    private Map<String, String> emailToName;
 
     public UsernameBank() {
         badEmails = new HashMap<String, Integer>();
