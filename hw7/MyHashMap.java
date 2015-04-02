@@ -48,7 +48,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
         LinkedList<Entry> ll = hashmap.get(getHash(key));
         if (ll.size() != 0) {
             for (Entry en : ll) {
-                if (en.key == key) {
+                if (en.key.equals(key)) {
                     return true;
                 }
             }
@@ -61,7 +61,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
         if (containsKey(key)) {
             LinkedList<Entry> ll = hashmap.get(getHash(key));
             for (Entry en : ll) {
-                if (en.key == key) {
+                if (en.key.equals(key)) {
                     return en.value;
                 }
             }
@@ -88,7 +88,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
         } else {
 
            for (Entry enn : ll) {
-               if (enn.key == key) {
+               if (enn.key.equals(key)) {
                    enn.value = value;
                    return;
                }
@@ -126,7 +126,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
             V value = get(key);
             LinkedList<Entry> ll = hashmap.get(getHash(key));
             for (Entry en : ll) {
-                if (en.key == key) {
+                if (en.key.equals(key)) {
                     ll.remove(en);
                     size = size - 1;
                 }
@@ -141,7 +141,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
         if (containsKey(key)) {
             LinkedList<Entry> ll = hashmap.get(getHash(key));
             for (Entry en : ll) {
-                if (en.key == key && en.value == value) {
+                if (en.key.equals(key) && en.value.equals(value)) {
                     ll.remove(en);
                     size = size - 1;
                     return value;
