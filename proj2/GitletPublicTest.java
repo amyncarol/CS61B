@@ -82,10 +82,13 @@ public class GitletPublicTest {
         String wugText = "This is a wug.";
         createFile(wugFileName, wugText);
         gitlet("init");
+        System.out.println(getText(wugFileName)); //
         gitlet("add", wugFileName);
         gitlet("commit", "added wug");
         writeFile(wugFileName, "This is not a wug.");
+        System.out.println(getText(wugFileName)); //
         gitlet("checkout", wugFileName);
+        System.out.println(getText(wugFileName)); //
         assertEquals(wugText, getText(wugFileName));
     }
 
