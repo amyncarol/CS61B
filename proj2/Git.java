@@ -16,16 +16,24 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Arrays;
 import java.nio.file.StandardCopyOption;
+import java.util.Stack;
+import java.util.Scanner;
 
 public class Git {
 	private CommitTree ct;
 	private Set<String> addFiles;
 	private Set<String> deleteFiles;
+	private Map<String, HashSet<Long>> messageToId;
+	private String currentBranch;
+	private Map<String, Long> branchToId;
 
 	public Git() {
 		ct = new CommitTree();
 		addFiles = new HashSet<String>();
 		deleteFiles = new HashSet<String>();
+		messageToId = new HashMap<String, HashSet<Long>>();
+		currentBranch = "master";
+		branchToId = new HashMap<String, Long>();
 	}
 
 	public void init() {
@@ -36,6 +44,9 @@ public class Git {
 		} else {
 			gitlet.mkdir();
 			ct.addNode("initial commit", deleteFiles, addFiles);
+			long head = ct.getHead();
+			putMessageToId("initial commit", head);
+			branchToId.put(currentBranch, head);
 			saveAllObject();
 		}
 	}
@@ -70,7 +81,7 @@ public class Git {
 			printError("No changes added to the commit.");
 			return;
 		}
-		if (message == null || message.equals("")) {
+		if (!isValidMessage(message)) {
 			printError("Please enter a commit message.");
 			return;
 		}
@@ -84,6 +95,8 @@ public class Git {
 		}
 		addFiles.clear();
 		deleteFiles.clear();
+		putMessageToId(message, head);
+		branchToId.put(currentBranch, head);
 		saveAllObject();
 	}
 
@@ -118,17 +131,340 @@ public class Git {
 		}
 	}
 
+	public void find(String message) {
+		loadAllObject();
+		if (!messageToId.containsKey(message)) {
+			printError("Found no commit with that message.");
+		} else {
+			Set<Long> idset = messageToId.get(message);
+			for (Long id : idset) {
+				System.out.println(id);
+			}
+		}
+	}
+
+	public void status() {
+		loadAllObject();
+		System.out.println("=== Branches ===");
+		Set<String> branchSet = branchToId.keySet();
+		for (String branch : branchSet) {
+			if (currentBranch.equals(branch)) {
+				System.out.println("*" + branch);
+			} else {
+				System.out.println(branch);
+			}
+		}
+		System.out.println();
+		System.out.println("=== Staged Files ===");
+		for (String file : addFiles) {
+			System.out.println(file);
+		}
+		System.out.println();
+		System.out.println("=== Files Marked for Removal ===");
+		for (String file : deleteFiles) {
+			System.out.println(file);
+		}
+	}
+
 	public void checkout(String filename) {
 		loadAllObject();
-		long head = ct.getHead();
-		Map<String, Long> fileMap = ct.getFileMap(head);
-		if (!fileMap.containsKey(filename)) {
-			printError("File does not exist in the most recent commit, or no such branch exists.");
+		//checkout branch
+		if (branchToId.containsKey(filename)) {
+			if (currentBranch.equals(filename)) {
+				printError("No need to checkout the current branch.");
+			} else {
+				currentBranch = filename;
+				long head = branchToId.get(filename);
+				ct.changeHead(head);
+				//System.out.println(ct.getHead());
+				Map<String, Long> fileMap = ct.getFileMap(head);
+				Set<String> files = fileMap.keySet();
+				long id;
+				String fromPath;
+				for (String file : files) {
+					id = fileMap.get(file);
+					fromPath = ".gitlet/" + String.valueOf(id) + "/" + file;
+					copyFile(fromPath, file);
+				}
+				saveAllObject();
+				return;
+			}	
+		} else { //checkout file
+			long head = ct.getHead();
+			Map<String, Long> fileMap = ct.getFileMap(head);
+			if (!fileMap.containsKey(filename)) {
+				printError("File does not exist in the most recent commit, or no such branch exists.");
+				return;
+			}
+			long id = fileMap.get(filename);
+			String fromPath = ".gitlet/" + String.valueOf(id) + "/" + filename;
+			copyFile(fromPath, filename);
+		}
+	}
+
+	public void checkout2(long id, String filename) {
+		loadAllObject();
+		if (!ct.containsId(id)) {
+			printError("No commit with that id exists.");
+			return;
+		} else {
+			Map<String, Long> fileMap = ct.getFileMap(id);
+			if (!fileMap.containsKey(filename)) {
+				printError("File does not exist in that commit.");
+				return;
+			}
+			long originalId = fileMap.get(filename);
+			String fromPath = ".gitlet/" + String.valueOf(originalId) + "/" + filename;
+			copyFile(fromPath, filename);
+		}
+	}
+
+	public void branch(String branchname) {
+		loadAllObject();
+		if (branchToId.containsKey(branchname)) {
+			printError("A branch with that name already exists.");
 			return;
 		}
-		long id = fileMap.get(filename);
-		String fromPath = ".gitlet/" + String.valueOf(id) + "/" + filename;
-		copyFile(fromPath, filename);
+		long head = ct.getHead();
+		branchToId.put(branchname, head);
+		saveAllObject();
+	}
+
+	public void rmBranch(String branchname) {
+		loadAllObject();
+		if (!branchToId.containsKey(branchname)) {
+			printError("A branch with that name does not exist.");
+			return;
+		} else if (currentBranch.equals(branchname)) {
+			printError("Cannot remove the current branch.");
+			return;
+		}
+		branchToId.remove(branchname);
+		saveAllObject();
+	}
+
+	public void reset(long id) {
+		loadAllObject();
+		reset2(id);
+		saveAllObject();
+	}
+
+	private void reset2(long id) {		
+		if (!ct.containsId(id)) {
+			printError("No commit with that id exists.");
+			return;
+		}
+		long head = id;
+		ct.changeHead(head);
+		branchToId.put(currentBranch, id);
+		Map<String, Long> fileMap = ct.getFileMap(id);
+		Set<String> files = fileMap.keySet();
+		String fromPath;
+		long originalId;
+		for (String file : files) {
+			originalId = fileMap.get(file);
+			fromPath = ".gitlet/" + String.valueOf(originalId) + "/" + file;
+			copyFile(fromPath, file);
+		}
+	}
+
+	public void merge(String branchname) {
+		loadAllObject();
+		if (!branchToId.containsKey(branchname)) {
+			printError("A branch with that name does not exist.");
+			return;
+		}
+		if (currentBranch.equals(branchname)) {
+			printError("Cannot merge a branch with itself.");
+			return;
+		}
+		//get split point id
+		// long currentBranchParent = branchToId.get(currentBranch);
+		// Set<Long> currentBranchHistory = new HashSet<Long>(currentBranchParent);
+		// long branchParent = branchToId.get(branchname);
+		// Set<Long> branchHistory = new HashSet<Long>(branchParent);
+		// while (!currentBranchHistory.contains(branchParent) && !branchHistory.contains(currentBranchParent)) {
+		// 	currentBranchParent = ct.getParent(currentBranchParent);
+		// 	currentBranchHistory.add(currentBranchParent);
+		// 	branchParent = ct.getParent(branchParent);
+		// 	branchHistory.add(branchParent);
+		// }
+		// long splitPoint;
+		// if (currentBranchHistory.contains(branchParent)) {
+		// 	splitPoint = branchParent;
+		// } else if (branchHistory.contains(currentBranchParent)) {
+		// 	splitPoint = currentBranchParent;
+		// }
+		//get diff fileMap
+		long branchId = branchToId.get(branchname);
+		long currentBranchId = branchToId.get(currentBranch);
+		Map<String, Long> branchfileMap = ct.getFileMap(branchId);
+		Map<String, Long> currentBranchfileMap = ct.getFileMap(currentBranchId);
+		Set<String> branchFiles = branchfileMap.keySet();
+		long originalId;
+		String fromPath;
+		String conflictFile;
+		long id;
+		for (String file : branchFiles) {
+			originalId = branchfileMap.get(file);
+			fromPath = ".gitlet/" + String.valueOf(originalId) + "/" + file;
+			if (!currentBranchfileMap.containsKey(file)) {
+				copyFile(fromPath, file);
+			} else {
+				id = currentBranchfileMap.get(file);
+				if (id != originalId) {
+					conflictFile = file + ".conflicted";
+					copyFile(fromPath, conflictFile);
+				}
+			}
+		}
+	}
+
+	public void rebase(String basebranch, boolean interactive) {
+		loadAllObject();
+		//failure cases
+		if (!branchToId.containsKey(basebranch)) {
+			printError("A branch with that name does not exist.");
+			return;
+		}
+		if (currentBranch.equals(basebranch)) {
+			printError("Cannot rebase a branch onto itself.");
+			return;
+		}
+		long currentBranchParent = branchToId.get(currentBranch);
+		long basebranchId = branchToId.get(basebranch);
+		Set<Long> currentBranchHistory = new HashSet<Long>();
+		currentBranchHistory.add(currentBranchParent);
+		while (currentBranchParent != 0) {
+			currentBranchParent = ct.getParent(currentBranchParent);
+			currentBranchHistory.add(currentBranchParent);
+			if (currentBranchHistory.contains(basebranchId)) {
+				printError("Already up-to-date.");
+				return;
+			}
+		}
+		/*** If the current branch is in the history of the given branch, 
+		   * rebase just moves the current branch to point to the same commit 
+		   * that the given branch points to.
+		   */
+		long basebranchParent = branchToId.get(basebranch);
+		long currentBranchId = branchToId.get(currentBranch);
+		Set<Long> basebranchHistory = new HashSet<Long>();
+		basebranchHistory.add(basebranchParent);
+		while (basebranchParent != 0) {
+			basebranchParent = ct.getParent(basebranchParent);
+			basebranchHistory.add(basebranchParent);
+			if (basebranchHistory.contains(currentBranchId)) {
+				ct.changeHead(basebranchId);
+				branchToId.put(currentBranch, basebranchId);
+				saveAllObject();
+				return;
+			}
+		}		
+		/*** get to split point, store all the currentBranch ids till the split point in a stack
+		   */
+		currentBranchParent = branchToId.get(currentBranch);
+		basebranchParent = branchToId.get(basebranch);
+		currentBranchHistory = new HashSet<Long>();
+		currentBranchHistory.add(currentBranchParent);
+		basebranchHistory = new HashSet<Long>();
+		basebranchHistory.add(basebranchParent);
+		Stack<Long> currentBranchStack = new Stack<Long>();
+		currentBranchStack.push(currentBranchParent);
+		while (!currentBranchHistory.contains(basebranchParent) && !basebranchHistory.contains(currentBranchParent)) {
+			currentBranchParent = ct.getParent(currentBranchParent);
+			currentBranchHistory.add(currentBranchParent);
+			basebranchParent = ct.getParent(basebranchParent);
+			basebranchHistory.add(basebranchParent);
+			currentBranchStack.push(currentBranchParent);
+		}
+		long currentId = currentBranchStack.pop();
+		while (!currentBranchStack.empty() && !basebranchHistory.contains(currentId)) {
+			currentId = currentBranchStack.pop();
+		}
+		currentBranchStack.pop(); // this is the split point
+		/*** replay start from here
+		   */
+		long head = ct.getHead();
+		int inChar;
+		boolean isValidInput;
+		long firstId = currentBranchStack.peek();
+		while (!currentBranchStack.empty()) {
+			currentId = currentBranchStack.pop();
+			if (interactive) {
+				System.out.println("Currently replaying:");
+				printlog(currentId);
+				isValidInput = false;
+				while (!isValidInput) {
+					System.out.println("Would you like to (c)ontinue, (s)kip this commit, or change this commit's (m)essage?");
+					try {
+						inChar = System.in.read();
+					} catch (IOException e) {
+						printError("IOException");
+						continue;
+					}
+					switch (inChar) {
+						case 99: //c
+							isValidInput = true;
+							ct.rebaseAddNode(basebranchId, currentId, null);
+							head = ct.getHead();
+							putMessageToId(ct.getMessage(head), head);
+							basebranchId = head;
+							break;
+						case 114: //s
+							if (currentId != firstId && !currentBranchStack.empty()) {
+								isValidInput = true;
+							}
+							break;
+						case 109: //m
+							isValidInput = true;
+							String message;
+							while (true) {
+								System.out.println("Please enter a new message for this commit.");
+								Scanner keyboard = new Scanner(System.in);
+								message = keyboard.nextLine();
+								if (isValidMessage(message)) {
+									break;
+								}
+							}
+							ct.rebaseAddNode(basebranchId, currentId, message);
+							head = ct.getHead();
+							putMessageToId(ct.getMessage(head), head);
+							basebranchId = head;
+							break;
+						default:
+							break;
+					}
+				}	
+			} else {
+				ct.rebaseAddNode(basebranchId, currentId, null);
+				head = ct.getHead();
+				putMessageToId(ct.getMessage(head), head);
+				basebranchId = head;
+			}
+			branchToId.put(currentBranch, head);
+			reset2(head);
+			saveAllObject();
+		}
+	}
+
+	private boolean isValidMessage(String message) {
+		if (message == null || message.equals("")) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	private void putMessageToId(String message, long id) {
+		HashSet<Long> idset;
+		if (!messageToId.containsKey(message)) {
+			idset = new HashSet<Long>();
+		} else {
+			idset = messageToId.get(message);
+		}
+		idset.add(id);
+		messageToId.put(message, idset);
 	}
 
 	private static void copyFile(String fromfile, String tofile) {
@@ -218,12 +554,18 @@ public class Git {
     	saveObject(ct, ".gitlet/commitTree.ser");
 		saveObject(addFiles, ".gitlet/addFiles.ser");
 		saveObject(deleteFiles, ".gitlet/deleteFiles.ser");
+		saveObject(messageToId, ".gitlet/messageToId.ser");
+		saveObject(currentBranch, ".gitlet/currentBranch.ser");
+		saveObject(branchToId, ".gitlet/branchToId.ser");
     }
 
     private void loadAllObject() {
     	ct = (CommitTree) loadObject(".gitlet/commitTree.ser");
     	addFiles = (Set<String>) loadObject(".gitlet/addFiles.ser");
     	deleteFiles = (Set<String>) loadObject(".gitlet/deleteFiles.ser");
+    	messageToId = (Map<String, HashSet<Long>>) loadObject(".gitlet/messageToId.ser");
+    	currentBranch = (String) loadObject(".gitlet/currentBranch.ser");
+    	branchToId = (Map<String, Long>) loadObject(".gitlet/branchToId.ser");
     }
 	
 }

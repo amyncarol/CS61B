@@ -76,43 +76,62 @@ public class GitletPublicTest {
      * Tests that checking out a file name will restore the version of the file
      * from the previous commit. Involves init, add, commit, and checkout.
      */
-    @Test
-    public void testBasicCheckout() {
+    // @Test
+    // public void testBasicCheckout() {
+    //     String wugFileName = TESTING_DIR + "wug.txt";
+    //     String wugText = "This is a wug.";
+    //     createFile(wugFileName, wugText);
+    //     gitlet("init");
+    //     //System.out.println(getText(wugFileName)); //
+    //     gitlet("add", wugFileName);
+    //     gitlet("commit", "added wug");
+    //     writeFile(wugFileName, "This is not a wug.");
+    //     //System.out.println(getText(wugFileName)); //
+    //     gitlet("checkout", wugFileName);
+    //     //System.out.println(getText(wugFileName)); //
+    //     assertEquals(wugText, getText(wugFileName));
+    // }
+
+    // /**
+    //  * Tests that log prints out commit messages in the right order. Involves
+    //  * init, add, commit, and log.
+    //  */
+    // @Test
+    // public void testBasicLog() {
+    //     gitlet("init");
+    //     String commitMessage1 = "initial commit";
+
+    //     String wugFileName = TESTING_DIR + "wug.txt";
+    //     String wugText = "This is a wug.";
+    //     createFile(wugFileName, wugText);
+    //     gitlet("add", wugFileName);
+    //     String commitMessage2 = "added wug";
+    //     gitlet("commit", commitMessage2);
+
+    //     String logContent = gitlet("log");
+    //     assertArrayEquals(new String[] { commitMessage2, commitMessage1 },
+    //             extractCommitMessages(logContent));
+    // }
+
+    @Test 
+    public void testCheckout2() {
         String wugFileName = TESTING_DIR + "wug.txt";
         String wugText = "This is a wug.";
         createFile(wugFileName, wugText);
         gitlet("init");
-        System.out.println(getText(wugFileName)); //
+        //System.out.println(getText(wugFileName)); //
         gitlet("add", wugFileName);
         gitlet("commit", "added wug");
+
+        gitlet("branch", "heyBranch");
+
         writeFile(wugFileName, "This is not a wug.");
-        System.out.println(getText(wugFileName)); //
-        gitlet("checkout", wugFileName);
-        System.out.println(getText(wugFileName)); //
+        gitlet("add", wugFileName);
+        gitlet("commit", "changed wug");
+        //System.out.println(getText(wugFileName)); //
+        gitlet("checkout", "heyBranch");
         assertEquals(wugText, getText(wugFileName));
     }
-
-    /**
-     * Tests that log prints out commit messages in the right order. Involves
-     * init, add, commit, and log.
-     */
-    @Test
-    public void testBasicLog() {
-        gitlet("init");
-        String commitMessage1 = "initial commit";
-
-        String wugFileName = TESTING_DIR + "wug.txt";
-        String wugText = "This is a wug.";
-        createFile(wugFileName, wugText);
-        gitlet("add", wugFileName);
-        String commitMessage2 = "added wug";
-        gitlet("commit", commitMessage2);
-
-        String logContent = gitlet("log");
-        assertArrayEquals(new String[] { commitMessage2, commitMessage1 },
-                extractCommitMessages(logContent));
-    }
-
     /**
      * Convenience method for calling Gitlet's main. Anything that is printed
      * out during this call to main will NOT actually be printed out, but will

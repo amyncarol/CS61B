@@ -44,6 +44,22 @@ public class CommitTree implements Serializable {
 		idToNode.put(id, node);
 	}
 
+	public void rebaseAddNode(long idParent, long idOriginal, String message) {
+		CommitNode node;
+		if (message == null) {
+			node = new CommitNode(idParent, getMessage(idOriginal));
+		} else {
+			node = new CommitNode(idParent, message);
+		}
+		long id = node.hash();
+		head = id;
+		Map<String, Long> fileMap = getFileMap(idParent);
+		Map<String, Long> fileMap2 = getFileMap(idOriginal); //should overwrite fileMap
+		fileMap.putAll(fileMap2);
+		node.putFileMap(fileMap);
+		idToNode.put(id, node);
+	}
+
 	public String getTime(long id) {
 		return idToNode.get(id).time(); //immutable??
 	}
@@ -60,8 +76,16 @@ public class CommitTree implements Serializable {
 		return head;
 	}
 
+	public void changeHead(long id) {
+		head = id;
+	}
+
 	public Set<Long> getIds() {
 		return idToNode.keySet(); //immutable??
+	}
+
+	public boolean containsId(long id) {
+		return idToNode.containsKey(id);
 	}
 
 	public Map<String, Long> getFileMap(long id) { //immutable?

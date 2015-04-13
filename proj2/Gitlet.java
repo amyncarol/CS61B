@@ -42,9 +42,37 @@ public class Gitlet {
                 	case "global-log":
                 		git.globalLog();
                 		break;
+                        case "find":
+                                git.find(tokens[0]);
+                                break;
+                        case "status":
+                                git.status();
+                                break;
                 	case "checkout":
-                		git.checkout(tokens[0]);
+                                if (tokens.length == 1) {
+                		      git.checkout(tokens[0]);
+                                } else {
+                                      git.checkout2(Long.parseLong(tokens[0]), tokens[1]);
+                                }
                 		break;
+                        case "branch":
+                                git.branch(tokens[0]);
+                                break;
+                        case "rm-branch":
+                                git.rmBranch(tokens[0]);
+                                break;
+                        case "reset":
+                                git.reset(Long.parseLong(tokens[0]));
+                                break;
+                        case "merge":
+                                git.merge(tokens[0]);
+                                break;
+                        case "rebase":
+                                git.rebase(tokens[0], false);
+                                break;
+                        case "i-rebase":
+                                git.rebase(tokens[0], true);
+                                break;
                 }
 	}
 }
