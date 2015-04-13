@@ -31,7 +31,7 @@ public class CommitTree implements Serializable {
 		if (parentId == 0) {
 			fileMap = new HashMap<String, Long>();
 		} else {
-			fileMap = idToNode.get(parentId).fileMap();
+			fileMap = new HashMap<String, Long>(idToNode.get(parentId).fileMap());
 		}
 		for (String file : addFiles) {
 			fileMap.put(file, head);
@@ -61,11 +61,11 @@ public class CommitTree implements Serializable {
 	}
 
 	public String getTime(long id) {
-		return idToNode.get(id).time(); //immutable??
+		return idToNode.get(id).time(); 
 	}
 
 	public String getMessage(long id) {
-		return idToNode.get(id).message(); //immutable??
+		return idToNode.get(id).message(); 
 	}
 
 	public long getParent(long id) {
@@ -81,15 +81,18 @@ public class CommitTree implements Serializable {
 	}
 
 	public Set<Long> getIds() {
-		return idToNode.keySet(); //immutable??
+		Set<Long> idSet = new HashSet<Long>();
+		idSet.addAll(idToNode.keySet());
+		return idSet;
 	}
 
 	public boolean containsId(long id) {
 		return idToNode.containsKey(id);
 	}
 
-	public Map<String, Long> getFileMap(long id) { //immutable?
-		return idToNode.get(id).fileMap();
+	public Map<String, Long> getFileMap(long id) { 
+		Map<String, Long> fileMap = new HashMap<String, Long>(idToNode.get(id).fileMap());
+		return fileMap;
 	}
 
 	/** return the commit folder of the file */

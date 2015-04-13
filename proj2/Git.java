@@ -167,6 +167,9 @@ public class Git {
 	}
 
 	public void checkout(String filename) {
+		if (!canProceed()) {
+			return;
+		}
 		loadAllObject();
 		//checkout branch
 		if (branchToId.containsKey(filename)) {
@@ -176,7 +179,6 @@ public class Git {
 				currentBranch = filename;
 				long head = branchToId.get(filename);
 				ct.changeHead(head);
-				//System.out.println(ct.getHead());
 				Map<String, Long> fileMap = ct.getFileMap(head);
 				Set<String> files = fileMap.keySet();
 				long id;
@@ -203,6 +205,9 @@ public class Git {
 	}
 
 	public void checkout2(long id, String filename) {
+		if (!canProceed()) {
+			return;
+		}
 		loadAllObject();
 		if (!ct.containsId(id)) {
 			printError("No commit with that id exists.");
@@ -244,6 +249,9 @@ public class Git {
 	}
 
 	public void reset(long id) {
+		if (!canProceed()) {
+			return;
+		}
 		loadAllObject();
 		reset2(id);
 		saveAllObject();
@@ -269,6 +277,9 @@ public class Git {
 	}
 
 	public void merge(String branchname) {
+		if (!canProceed()) {
+			return;
+		}
 		loadAllObject();
 		if (!branchToId.containsKey(branchname)) {
 			printError("A branch with that name does not exist.");
@@ -321,6 +332,9 @@ public class Git {
 	}
 
 	public void rebase(String basebranch, boolean interactive) {
+		if (!canProceed()) {
+			return;
+		}
 		loadAllObject();
 		//failure cases
 		if (!branchToId.containsKey(basebranch)) {
@@ -382,7 +396,6 @@ public class Git {
 		while (!currentBranchStack.empty() && !basebranchHistory.contains(currentId)) {
 			currentId = currentBranchStack.pop();
 		}
-		currentBranchStack.pop(); // this is the split point
 		/*** replay start from here
 		   */
 		long head = ct.getHead();
@@ -400,7 +413,7 @@ public class Git {
 					try {
 						inChar = System.in.read();
 					} catch (IOException e) {
-						printError("IOException");
+						//printError("IOException");
 						continue;
 					}
 					switch (inChar) {
@@ -448,6 +461,21 @@ public class Git {
 		}
 	}
 
+	private boolean canProceed() {
+		boolean proceed;
+		System.out.println("Warning: The command you entered may alter " +
+		 "the files in your working directory. Uncommitted changes may be lost. " +
+		  "Are you sure you want to continue? (yes/no)");
+		Scanner keyboard = new Scanner(System.in);
+		String message = keyboard.nextLine();
+		if (message.equals("yes")) {
+			proceed = true;
+		} else {
+			proceed = false;
+		}
+		return proceed;
+	}
+
 	private boolean isValidMessage(String message) {
 		if (message == null || message.equals("")) {
 			return false;
@@ -472,11 +500,13 @@ public class Git {
 		File to = new File(tofile); 
 		//System.out.println(from);
 		//System.out.println(to);
-		try {
-    		Files.copy(from.toPath(), to.toPath(), StandardCopyOption.REPLACE_EXISTING);
-    	} catch (IOException e) {
-    		printError("copy : IOException.");
-    	}
+		if (from.exists()) {
+			try {
+	    		Files.copy(from.toPath(), to.toPath(), StandardCopyOption.REPLACE_EXISTING);
+	    	} catch (IOException e) {
+	    		//printError("copy : IOException.");
+	    	}
+	    } 
 	}
 
 
