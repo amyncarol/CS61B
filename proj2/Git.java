@@ -191,7 +191,7 @@ public class Git {
 				saveAllObject();
 				return;
 			}	
-		} else { //checkout file
+		} else { //checkout file.
 			long head = ct.getHead();
 			Map<String, Long> fileMap = ct.getFileMap(head);
 			if (!fileMap.containsKey(filename)) {
