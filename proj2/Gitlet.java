@@ -73,6 +73,9 @@ public class Gitlet {
                         case "i-rebase":
                                 git.rebase(tokens[0], true);
                                 break;
+                        default:
+                                System.out.println("Unrecognized command.");
+                                break;
                 }
 	}
 }

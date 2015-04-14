@@ -399,37 +399,33 @@ public class Git {
 		/*** replay start from here
 		   */
 		long head = ct.getHead();
-		int inChar;
+		String inChar;
 		boolean isValidInput;
 		long firstId = currentBranchStack.peek();
 		while (!currentBranchStack.empty()) {
 			currentId = currentBranchStack.pop();
 			if (interactive) {
 				System.out.println("Currently replaying:");
-				printlog(currentId);
+				printlog2(currentId);
 				isValidInput = false;
 				while (!isValidInput) {
 					System.out.println("Would you like to (c)ontinue, (s)kip this commit, or change this commit's (m)essage?");
-					try {
-						inChar = System.in.read();
-					} catch (IOException e) {
-						//printError("IOException");
-						continue;
-					}
+					Scanner key = new Scanner(System.in);
+					inChar = key.nextLine();
 					switch (inChar) {
-						case 99: //c
+						case "c": //c
 							isValidInput = true;
 							ct.rebaseAddNode(basebranchId, currentId, null);
 							head = ct.getHead();
 							putMessageToId(ct.getMessage(head), head);
 							basebranchId = head;
 							break;
-						case 114: //s
+						case "s": //s
 							if (currentId != firstId && !currentBranchStack.empty()) {
 								isValidInput = true;
 							}
 							break;
-						case 109: //m
+						case "m": //m
 							isValidInput = true;
 							String message;
 							while (true) {
@@ -445,7 +441,7 @@ public class Git {
 							putMessageToId(ct.getMessage(head), head);
 							basebranchId = head;
 							break;
-						default:
+						 default:
 							break;
 					}
 				}	
@@ -512,12 +508,17 @@ public class Git {
 
 	private void printlog(long id) {
 		System.out.println("====");
-		System.out.println(id);
+		System.out.println("Commit " + id + ".");
 		System.out.println(ct.getTime(id));
 		System.out.println(ct.getMessage(id));
 		System.out.println();
 	}
 
+	private void printlog2(long id) {
+		System.out.println("Commit " + id + ".");
+		System.out.println(ct.getTime(id));
+		System.out.println(ct.getMessage(id));
+	}
 	private static void printError(String error) {
 		System.out.println(error);
 	}
