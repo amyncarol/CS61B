@@ -57,8 +57,10 @@ public class Sorts {
     public static int[] radixSort(int[] keys) {
         int size = keys.length;
         int[] sortedKeys = new int[size];
+        int[] tmpKeys = keys;
         for (int i = 0; i < 8; i++) {
-            sortedKeys = countingSort(keys, i);
+            sortedKeys = countingSort(tmpKeys, i);
+            tmpKeys = sortedKeys;
         }
         return sortedKeys;
     }
