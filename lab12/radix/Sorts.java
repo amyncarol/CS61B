@@ -22,7 +22,28 @@ public class Sorts {
      *    and containing the same keys sorted according to the chosen digit.
      **/
     public static int[] countingSort(int[] keys, int whichDigit) {
-        //YOUR CODE HERE
+        int size = keys.length;
+        int[] sortedKeys = new int[size];
+        int[] count = new int[16];
+        int[] position = new int[16];        
+        int mask = 15;
+        int index;
+        int index2;
+        for (int i = 0; i < size; i++) {
+            index = ((keys[i] >>> (whichDigit*4)) & mask);
+            count[index]++;            
+        }
+        position[0] = 0;
+        for (int j = 1; j < 16; j++) {
+            position[j] = position[j-1] + count[j-1];
+        }
+        for (int k = 0; k < size; k++) {
+            index = ((keys[k] >>> (whichDigit*4)) & mask);
+            index2 = position[index];
+            sortedKeys[index2] = keys[k];
+            position[index]++; 
+        }
+        return sortedKeys;
     }
 
     /**
@@ -34,7 +55,12 @@ public class Sorts {
      *    and containing the same keys in sorted order.
      **/
     public static int[] radixSort(int[] keys) {
-        //YOUR CODE HERE
+        int size = keys.length;
+        int[] sortedKeys = new int[size];
+        for (int i = 0; i < 8; i++) {
+            sortedKeys = countingSort(keys, i);
+        }
+        return sortedKeys;
     }
 
 }

@@ -243,6 +243,7 @@ public final class Sort {
         /** YOUR CODE HERE! */
         
         return x < y;
+
     }
 
     /**
@@ -252,14 +253,26 @@ public final class Sort {
      *  @param index2 the index of the second int to be swapped.
      **/
     private static void exch(int[] a, int index1, int index2) {
-        /** YOUR CODE HERE! */
+        int indexLarge;
+        SortSounds.clearRectangle(index1);
+        SortSounds.clearRectangle(index2);
 
         int tmp = a[index1];
         a[index1] = a[index2];
         a[index2] = tmp;
 
-        /** YOUR CODE HERE! */
+        if (index1 <= index2) {
+            indexLarge = index2;
+        } else {
+            indexLarge = index1;
+        }
 
+        SortSounds.drawRectangle(StdDraw.RED, indexLarge);
+        StdDraw.show(5);
+        SortSounds.play(indexLarge);
+        SortSounds.drawRectangle(StdDraw.CYAN, index1);
+        SortSounds.drawRectangle(StdDraw.CYAN, index2);
+        StdDraw.show(5);
     }
 
 }
