@@ -211,12 +211,11 @@ public class UserList {
         if (qOfQ.isEmpty()) {
             return;
         }
+        CatenableQueue<User> q1 = new CatenableQueue<User>();
+        while (qOfQ.front().size() < size) {
+            qOfQ.enqueue(mergeTwoQueues(sortFeature, qOfQ.dequeue(), qOfQ.dequeue()));
+        } 
         userQueue = qOfQ.dequeue();
-        CatenableQueue<User> q2 = new CatenableQueue<User>();
-        while (!qOfQ.isEmpty()) {
-            q2 = qOfQ.dequeue();
-            userQueue = mergeTwoQueues(sortFeature, userQueue, q2);
-        }       
     }
 
     /**
