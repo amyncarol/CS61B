@@ -211,7 +211,6 @@ public class UserList {
         if (qOfQ.isEmpty()) {
             return;
         }
-        CatenableQueue<User> q1 = new CatenableQueue<User>();
         while (qOfQ.front().size() < size) {
             qOfQ.enqueue(mergeTwoQueues(sortFeature, qOfQ.dequeue(), qOfQ.dequeue()));
         } 
@@ -223,8 +222,8 @@ public class UserList {
     *   If two Users have printed the same number of pages, the User with the smaller user ID is first.
     **/
     public void sortByBothFeatures(){
-        mergeSort("id");
-        mergeSort("pages");
+        quickSort("id");
+        quickSort("pages");
     }
 
 
