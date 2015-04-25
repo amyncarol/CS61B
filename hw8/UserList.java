@@ -141,10 +141,6 @@ public class UserList {
         User tmpUser;
         CatenableQueue<CatenableQueue<User>> queueOfQueues = new CatenableQueue<CatenableQueue<User>>();
         if (userQueue.isEmpty()) {
-            tmpUser = userQueue.dequeue();
-            tmpQueue = new CatenableQueue<User>();
-            tmpQueue.enqueue(tmpUser);
-            queueOfQueues.enqueue(tmpQueue);
             return queueOfQueues;
         }
         while(!userQueue.isEmpty()) {
