@@ -140,9 +140,6 @@ public class UserList {
         CatenableQueue<User> tmpQueue;
         User tmpUser;
         CatenableQueue<CatenableQueue<User>> queueOfQueues = new CatenableQueue<CatenableQueue<User>>();
-        if (userQueue.isEmpty()) {
-            return queueOfQueues;
-        }
         while(!userQueue.isEmpty()) {
             tmpUser = userQueue.dequeue();
             tmpQueue = new CatenableQueue<User>();
@@ -211,6 +208,9 @@ public class UserList {
     **/
     public void mergeSort(String sortFeature){
         CatenableQueue<CatenableQueue<User>> qOfQ = this.makeQueueOfQueues();
+        if (qOfQ.isEmpty()) {
+            return;
+        }
         userQueue = qOfQ.dequeue();
         CatenableQueue<User> q2 = new CatenableQueue<User>();
         while (!qOfQ.isEmpty()) {
