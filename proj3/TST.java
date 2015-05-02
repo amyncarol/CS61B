@@ -21,14 +21,14 @@ public class TST {
      */
     public Iterable<String> kMatches(String s, int k) {
         PriorityQueue<WordAndWeight> pqWord = kMatchHelper(s,k);
+        LinkedList<String> kStrings = new LinkedList<String>();
         if (pqWord == null || pqWord.size() == 0) {
-            return null;
+            return kStrings;
         }
         Stack<String> strings = new Stack<String>();
         while (pqWord.size() != 0) {
             strings.push(pqWord.poll().word);
         }
-        LinkedList<String> kStrings = new LinkedList<String>();
         int size = strings.size();
         for (int i = 0; i < Math.min(k, size); i++) {
             kStrings.add(strings.pop());
