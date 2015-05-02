@@ -1,3 +1,4 @@
+import java.util.LinkedList;
 /**
  * Implements autocomplete on prefixes for a given dictionary of terms and weights.
  */
@@ -7,7 +8,20 @@ public class Autocomplete {
      * @param terms Array of terms.
      * @param weights Array of weights.
      */
+    private TST t;
+
     public Autocomplete(String[] terms, double[] weights) {
+    	if (terms.length != weights.length) {
+    		throw new IllegalArgumentException();
+    	} 
+    	t = new TST();
+    	int size = terms.length;
+    	for (int i = 0; i < size; i++) {
+    		if (weights[i] < 0) {
+    			throw new IllegalArgumentException();
+    		}
+    		t.insert(terms[i], weights[i]);
+    	}
     }
 
     /**
@@ -16,6 +30,7 @@ public class Autocomplete {
      * @return
      */
     public double weightOf(String term) {
+    	return t.find(term);
     }
 
     /**
@@ -24,6 +39,7 @@ public class Autocomplete {
      * @return Best (highest weight) matching string in the dictionary.
      */
     public String topMatch(String prefix) {
+    	return t.kMatch(prefix);
     }
 
     /**
@@ -34,6 +50,7 @@ public class Autocomplete {
      * @return
      */
     public Iterable<String> topMatches(String prefix, int k) {
+    	return t.kMatches(prefix, k);
     }
 
     /**
