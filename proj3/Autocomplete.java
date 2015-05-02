@@ -20,7 +20,9 @@ public class Autocomplete {
     		if (weights[i] < 0) {
     			throw new IllegalArgumentException();
     		}
-    		t.insert(terms[i], weights[i]);
+    		if (terms[i].length() != 0) {
+    			t.insert(terms[i], weights[i]);
+    		}
     	}
     }
 

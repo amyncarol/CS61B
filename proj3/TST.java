@@ -53,29 +53,44 @@ public class TST {
         if (k <= 0) {
             throw new IllegalArgumentException();
         }
-        Node prefixRoot = findPrefix(s);
+        Node prefixRoot;
+        if (s.length() == 0) {
+            prefixRoot = root;
+        } else {
+            prefixRoot = findPrefix(s);
+        }
         if (prefixRoot == null) {
             return null;
         }
         PriorityQueue<WordAndWeight> pqWord = new PriorityQueue<WordAndWeight>();
         PriorityQueue<NodeWithWord> pqNode = new PriorityQueue<NodeWithWord>();
-        NodeWithWord nw = new NodeWithWord(s, prefixRoot);
-        pqNode.add(nw);
-        NodeWithWord largest = pqNode.poll();
+        NodeWithWord nw;
+        NodeWithWord largest;
         WordAndWeight ww;
-        if (largest.node.weight != null) {
-            ww = new WordAndWeight(s, largest.node.weight);
-            pqWord.add(ww);
-        }
-        if (largest.node.down != null) {
-            nw = new NodeWithWord(largest.word+largest.node.down.c, largest.node.down);
+        if (s.length() != 0) {
+            nw = new NodeWithWord(s, prefixRoot);
             pqNode.add(nw);
+            largest = pqNode.poll();
+            if (largest.node.weight != null) {
+                ww = new WordAndWeight(s, largest.node.weight);
+                pqWord.add(ww);
+            }
+            if (largest.node.down != null) {
+                nw = new NodeWithWord(largest.word+largest.node.down.c, largest.node.down);
+                pqNode.add(nw);
+            }
+        } else {
+            nw = new NodeWithWord(s+root.c, prefixRoot);
+            pqNode.add(nw);
+            largest = pqNode.peek();
         }
+
         while(pqNode.size() != 0) {
             if (pqWord.size() >= k && pqWord.peek().weight >= largest.node.maxSubWeight) {
                 return pqWord;
             } 
             largest = pqNode.poll();
+            // System.out.println("poll:"+largest.node.c);
             if (largest.node.weight != null) {
                 ww = new WordAndWeight(largest.word, largest.node.weight);
                 pqWord.add(ww);
@@ -85,6 +100,7 @@ public class TST {
             if (largest.node.down != null) {
                 nw = new NodeWithWord(whole+largest.node.down.c, largest.node.down);
                 pqNode.add(nw);
+                // System.out.println("down:"+nw.node.c);
             }
             if (largest.node.left != null) {
                 nw = new NodeWithWord(sub+largest.node.left.c, largest.node.left);
@@ -203,11 +219,17 @@ public class TST {
                     }
                     currentNode = currentNode.down;
                 } else if (currentNode.c.compareTo(c) > 0) {
+                    if (currentNode.maxSubWeight < weight) {
+                        currentNode.maxSubWeight = weight;
+                    }
                     if (currentNode.left == null) {
                         currentNode.left = new Node();
                     }
                     currentNode = currentNode.left;
                 } else if (currentNode.c.compareTo(c) < 0) {
+                    if (currentNode.maxSubWeight < weight) {
+                        currentNode.maxSubWeight = weight;
+                    }
                     if (currentNode.right == null) {
                         currentNode.right = new Node();
                     }
@@ -276,23 +298,22 @@ public class TST {
         }
     }
 
- //    public static void main(String[] args) {
-	//     TST t = new TST();
-	//     t.insert("smog", 5);
-	//     t.insert("buck", 10);
-	//     t.insert("sad", 12);
-	//     // System.out.println(t.find("hell"));
-	//     // System.out.println(t.find("hello"));
-	//     // System.out.println(t.find("hey"));
-	//     // System.out.println(t.find("goodbye"));
-	//     // System.out.println(t.find("heyy"));
-	//     // System.out.println(t.find("hell"));  
- //        t.insert("spite", 20);
- //        t.insert("spit", 15);
- //        t.insert("spy", 7);
- //        t.insert("smog", 18);
- //        System.out.println(t.kMatch("sp"));
- //        // System.out.println(t.kMatch("he"));
- //        // System.out.println(t.kMatch("uu"));
-	// }
+    public static void main(String[] args) {
+	    TST t = new TST();
+	    t.insert("smog", 5);
+	    t.insert("buck", 18);
+	    t.insert("sad", 12);
+	    // System.out.println(t.find("hell"));
+	    // System.out.println(t.find("hello"));
+	    // System.out.println(t.find("hey"));
+	    // System.out.println(t.find("goodbye"));
+	    // System.out.println(t.find("heyy"));
+	    // System.out.println(t.find("hell"));  
+        t.insert("spite", 20);
+        t.insert("spit", 15);
+        t.insert("spy", 7);
+        System.out.println(t.kMatch(""));
+        // System.out.println(t.kMatch("he"));
+        // System.out.println(t.kMatch("uu"));
+	}
 }
