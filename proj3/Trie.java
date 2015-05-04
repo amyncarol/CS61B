@@ -1,5 +1,7 @@
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.Comparator;
+import java.util.LinkedList;
 
 /**
  * Prefix-Trie. Supports linear time find() and insert(). 
@@ -9,10 +11,22 @@ import java.util.TreeMap;
  */
 public class Trie {
 	private Node root;
+    private Comparator<Character> comparator;
+    private boolean needsComparator;
+    private LinkedList<String> strings;
 
 	public Trie() {
+        needsComparator = false;
 		root = new Node();
+        strings = new LinkedList<String>();
 	}
+
+    public Trie(Comparator<Character> comparator) {
+        needsComparator = true;
+        this.comparator = comparator;
+        root = new Node();
+        strings = new LinkedList<String>();
+    }
 
     public boolean find(String s, boolean isFullWord) {
     	Node currentNode = root;
@@ -58,14 +72,35 @@ public class Trie {
     	}
     }
 
+    public LinkedList<String> traversal() {
+        oneCharDeeper("", root);
+        return strings;
+    }
+
+    private void oneCharDeeper(String s, Node n) {
+        if (n == null) {
+            return;
+        }
+        if (n.exist) {
+            strings.add(s);
+        } 
+        for (Character c : n.link.keySet()) {
+            oneCharDeeper(s+c.toString(), n.link.get(c));
+        }
+    }
+
     private class Node {
     	private boolean exist;
     	private Map<Character, Node> link;
 
-    	public Node() {
-    		exist = false;
-    		link = new TreeMap<Character, Node>();
-    	}
+        public Node() {
+            exist = false;
+            if (needsComparator) {
+                link = new TreeMap<Character, Node>(comparator);
+            } else {
+                link = new TreeMap<Character, Node>();
+            }
+        }
     }
 
     public static void main(String[] args) {
@@ -78,6 +113,7 @@ public class Trie {
 	    System.out.println(t.find("good", false));
 	    System.out.println(t.find("bye", false));
 	    System.out.println(t.find("heyy", false));
-	    System.out.println(t.find("hell", true));   
+	    System.out.println(t.find("hell", true));  
+        System.out.println(t.traversal());
 	}
 }

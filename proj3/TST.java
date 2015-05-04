@@ -67,9 +67,11 @@ public class TST {
         NodeWithWord nw;
         NodeWithWord largest;
         WordAndWeight ww;
+        double smallestWeightInPqNode;
         if (s.length() != 0) {
             nw = new NodeWithWord(s, prefixRoot);
             pqNode.add(nw);
+            smallestWeightInPqNode = nw.node.maxSubWeight;
             largest = pqNode.poll();
             if (largest.node.weight != null) {
                 ww = new WordAndWeight(s, largest.node.weight);
@@ -78,10 +80,14 @@ public class TST {
             if (largest.node.down != null) {
                 nw = new NodeWithWord(largest.word+largest.node.down.c, largest.node.down);
                 pqNode.add(nw);
+                if (nw.node.maxSubWeight < smallestWeightInPqNode) {
+                    smallestWeightInPqNode = nw.node.maxSubWeight;
+                }
             }
         } else {
             nw = new NodeWithWord(s+root.c, prefixRoot);
             pqNode.add(nw);
+            smallestWeightInPqNode = nw.node.maxSubWeight;
             largest = pqNode.peek();
         }
 
@@ -92,23 +98,34 @@ public class TST {
             largest = pqNode.poll();
             // System.out.println("poll:"+largest.node.c);
             if (largest.node.weight != null) {
-                ww = new WordAndWeight(largest.word, largest.node.weight);
-                pqWord.add(ww);
+                if (pqNode.size() < k || largest.node.weight >= smallestWeightInPqNode) {
+                    ww = new WordAndWeight(largest.word, largest.node.weight);
+                    pqWord.add(ww);
+                }
             }
             String whole = largest.word;
             String sub = largest.word.substring(0, largest.word.length()-1);
             if (largest.node.down != null) {
                 nw = new NodeWithWord(whole+largest.node.down.c, largest.node.down);
                 pqNode.add(nw);
+                if (nw.node.maxSubWeight < smallestWeightInPqNode) {
+                    smallestWeightInPqNode = nw.node.maxSubWeight;
+                }
                 // System.out.println("down:"+nw.node.c);
             }
             if (largest.node.left != null) {
                 nw = new NodeWithWord(sub+largest.node.left.c, largest.node.left);
                 pqNode.add(nw);
+                if (nw.node.maxSubWeight < smallestWeightInPqNode) {
+                    smallestWeightInPqNode = nw.node.maxSubWeight;
+                }
             }
             if (largest.node.right != null) {
                 nw = new NodeWithWord(sub+largest.node.right.c, largest.node.right);
                 pqNode.add(nw);
+                if (nw.node.maxSubWeight < smallestWeightInPqNode) {
+                    smallestWeightInPqNode = nw.node.maxSubWeight;
+                }
             }
         }
         return pqWord; 
