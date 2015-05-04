@@ -93,7 +93,7 @@ public class TST {
 
         while(pqNode.size() != 0) {
             if (pqWord.size() >= k && pqWord.peek().weight >= largest.node.maxSubWeight) {
-                System.out.println("pqsize:" + pqNode.size() + " pqWordSize:" + pqWord.size() + " k:" + k);
+                // System.out.println("pqsize:" + pqNode.size() + " pqWordSize:" + pqWord.size() + " k:" + k);
                 return pqWord;
             } 
             largest = pqNode.poll();
