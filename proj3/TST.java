@@ -105,6 +105,9 @@ public class TST {
                 if (pqNode.size() < k || largest.node.weight >= smallestWeightInPqNode) {
                     ww = new WordAndWeight(largest.word, largest.node.weight);
                     pqWord.add(ww);
+                    if (pqWord.size() > k) {
+                        pqWord.poll();
+                    }
                 }
             }
             String whole = largest.word;
