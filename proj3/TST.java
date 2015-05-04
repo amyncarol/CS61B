@@ -11,6 +11,7 @@ import java.util.LinkedList;
  */
 public class TST {
 	private Node root;
+    private double smallestWeightInPqNode;
 
 	public TST() {
 		root = new Node();
@@ -67,7 +68,6 @@ public class TST {
         NodeWithWord nw;
         NodeWithWord largest;
         WordAndWeight ww;
-        double smallestWeightInPqNode;
         if (s.length() != 0) {
             nw = new NodeWithWord(s, prefixRoot);
             pqNode.add(nw);
@@ -93,9 +93,13 @@ public class TST {
 
         while(pqNode.size() != 0) {
             if (pqWord.size() >= k && pqWord.peek().weight >= largest.node.maxSubWeight) {
+                System.out.println("pqsize:" + pqNode.size() + " pqWordSize:" + pqWord.size() + " k:" + k);
                 return pqWord;
             } 
             largest = pqNode.poll();
+            if (pqNode.size() > 10*k) {
+                pqNode = resize(pqNode, k);
+            }
             // System.out.println("poll:"+largest.node.c);
             if (largest.node.weight != null) {
                 if (pqNode.size() < k || largest.node.weight >= smallestWeightInPqNode) {
@@ -256,6 +260,18 @@ public class TST {
     	}
     }
 
+    private PriorityQueue<NodeWithWord> resize(PriorityQueue<NodeWithWord> pqNode, int k) {
+        PriorityQueue<NodeWithWord> newPqNode = new PriorityQueue<NodeWithWord>();
+        for (int i = 0; i < k; i++) {
+            if (i == k-1) {
+                smallestWeightInPqNode = pqNode.peek().node.maxSubWeight;
+            }
+            newPqNode.add(pqNode.poll());
+        }
+        return newPqNode;
+    }
+
+
     private class Node implements Comparable<Node> {
     	private Double weight;
     	private Double maxSubWeight;
@@ -314,6 +330,7 @@ public class TST {
             }
         }
     }
+
 
     public static void main(String[] args) {
 	    TST t = new TST();
